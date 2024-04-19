@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "423842731795",
+    "project_id": "codesphere-1a400",
+    "storage_bucket": "codesphere-1a400.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:423842731795:android:38df201fdfd0e1cf256ce6",
+        "android_client_info": {
+          "package_name": "com.example.codesphere"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBoHGWzoEbZfW9D88kpesXHp8LfRRZ5Y5U"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

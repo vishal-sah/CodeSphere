@@ -1,3 +1,4 @@
+import 'package:codesphere/landingPage/faqPage.dart';
 import 'package:flutter/material.dart';
 
 class LandingPage extends StatefulWidget {
@@ -11,7 +12,7 @@ class LandingPage extends StatefulWidget {
 class _LandingPageState extends State<LandingPage> {
   int _selectedPage = 0;
   int _hoveredTab = 0;
-  List<Widget> pages = [Text('1'), Text('2'), Text('3'), ];
+  List<Widget> pages = [Text('1'), const Text('2'), const FAQsPage(), ];
 
   void _selectPage(int pageIndex) {
     setState(() {

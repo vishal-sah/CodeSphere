@@ -1,4 +1,6 @@
+import 'package:codesphere/auth/login_page.dart';
 import 'package:codesphere/dashboard/dashboard.dart';
+import 'package:codesphere/firebase/firebase_functions.dart';
 import 'package:codesphere/landingPage/about_page.dart';
 import 'package:codesphere/landingPage/faqPage.dart';
 import 'package:flutter/material.dart';
@@ -19,6 +21,8 @@ class _LandingPageState extends State<LandingPage> {
     const Text('2'),
     const FAQsPage(),
   ];
+  final AuthServices auth = AuthServices();
+  bool isUser = false;
 
   void _selectPage(int pageIndex) {
     setState(() {
@@ -33,6 +37,14 @@ class _LandingPageState extends State<LandingPage> {
   }
 
   @override
+  void initState() {
+    if (auth.getCurentUser() != null) {
+      isUser = true;
+    }
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
     bool isSmallScreen = MediaQuery.of(context).size.width <= 600;
     bool isDarkTheme = false;
@@ -43,16 +55,16 @@ class _LandingPageState extends State<LandingPage> {
         title: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Row(
+            const Row(
               children: [
-                Image.asset(
-                  'assets/images/abc.png',
-                  height: 30,
-                ),
-                const SizedBox(
+                // Image.asset(
+                //   'assets/images/abc.png',
+                //   height: 30,
+                // ),
+                SizedBox(
                   width: 10,
                 ),
-                const Text(
+                Text(
                   'CodeSphere',
                   style: TextStyle(
                       fontWeight: FontWeight.bold,
@@ -113,15 +125,31 @@ class _LandingPageState extends State<LandingPage> {
                     },
                   ),
                 IconButton(
-                    // ignore: dead_code
-                    icon: isDarkTheme
-                        ? const Icon(Icons.dark_mode)
-                        : const Icon(Icons.light_mode),
-                    onPressed: () {
-                      setState(() {
-                        isDarkTheme = !isDarkTheme;
-                      });
-                    }),
+                  // ignore: dead_code
+                  icon: isDarkTheme
+                      ? const Icon(Icons.dark_mode)
+                      : const Icon(Icons.light_mode),
+                  onPressed: () {
+                    setState(() {
+                      isDarkTheme = !isDarkTheme;
+                    });
+                  },
+                ),
+                isUser
+                    ? MaterialButton(
+                        onPressed: () {},
+                        child: const Text('Go to Dashboard'),
+                      )
+                    : MaterialButton(
+                        onPressed: () {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) =>
+                                      const EmailPasswordLoginPage()));
+                        },
+                        child: const Text('SignIn'),
+                      )
               ],
             ),
           ],

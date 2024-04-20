@@ -1,4 +1,6 @@
 import 'dart:async';
+import 'package:codesphere/dashboard/dashboard.dart';
+import 'package:codesphere/screens/profile_form.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:codesphere/auth/dashboard_page.dart';
@@ -86,31 +88,10 @@ class _VerifyEmailState extends State<VerifyEmail> {
   Widget build(BuildContext context) {
     return isEmailVerified
         ? Scaffold(
-            body: Padding(
-              padding: EdgeInsets.all(16.0),
-              child: Center(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text(
-                      'Your Email is Verified! You can now sign in.',
-                      style: TextStyle(fontSize: 20),
-                    ),
-                    SizedBox(height: 10.0),
-                    ElevatedButton(
-                      child: Text('Continue'),
-                      onPressed: () {
-                        Navigator.of(context).pushReplacement(
-                          MaterialPageRoute(
-                            builder: (_) => DashboardPage(),
-                          ),
-                        );
-                      },
-                    ),
-                  ],
-                ),
-              ),
+            appBar: AppBar(
+              title: Text('Provide your details'),
             ),
+            body: ProfileForm(),
           )
         : Scaffold(
             appBar: AppBar(
@@ -132,7 +113,8 @@ class _VerifyEmailState extends State<VerifyEmail> {
                       label: Text('Resend Email'),
                       onPressed: canResendEmail ? sendVerificationEmail : null,
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: canResendEmail ? Colors.blue : Colors.grey,
+                        backgroundColor:
+                            canResendEmail ? Colors.blue : Colors.grey,
                       ),
                     ),
                     SizedBox(height: 10.0),

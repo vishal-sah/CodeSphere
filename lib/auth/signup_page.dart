@@ -75,131 +75,130 @@ class _SignUpPageState extends State<SignUpPage> {
     }
   }
 
-Future<void> _handleSignUp() async {
-  try {
-    setState(
-      () {
-        // show loading indicator
-        _isLoading = true;
-      },
-    );
-
-    // Initialize Firebase app
-    await Firebase.initializeApp(
-      options: DefaultFirebaseOptions.currentPlatform,
-    );
-
-    if (_name.text == "" ||
-        _email.text == "" ||
-        _password.text == "" ||
-        _confirmPassword.text == "") {
-      // Check if any of the required fields are empty
-      showErrorDialog(
-        context,
-        "Please make sure to enter all the required fields.",
-        "Try Again",
-        'OK',
-      );
-    } else {
-      // Attempt to create a user
-      final userCredential =
-          await FirebaseAuth.instance.createUserWithEmailAndPassword(
-        email: _email.text,
-        password: _password.text,
+  Future<void> _handleSignUp() async {
+    try {
+      setState(
+        () {
+          // show loading indicator
+          _isLoading = true;
+        },
       );
 
-      // Show successful sign-up message to the user
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Sign Up Successful'),
-          duration: Duration(seconds: 2),
-          behavior: SnackBarBehavior.floating,
-        ),
+      // Initialize Firebase app
+      await Firebase.initializeApp(
+        options: DefaultFirebaseOptions.currentPlatform,
       );
 
-      // Delay navigation to the VerifyEmail page
-      await Future.delayed(Duration(seconds: 2));
-
-      // Navigate to the VerifyEmail page
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(
-          builder: (context) => VerifyEmail(),
-        ),
-      );
-
-      // Check if user creation was successful
-      if (userCredential.user != null) {
-        // Store user details in Firestore
-        String uid = userCredential.user!.uid;
-        DocumentReference userDetailsRef = FirebaseFirestore.instance
-            .collection('users')
-            .doc(uid)
-            .collection('user_details')
-            .doc();
-
-        // Set user details in Firestore
-        await userDetailsRef.set(
-          {
-            'name': _name.text,
-            'dateOfBirth': _dateOfBirthController.text,
-            'email': _email.text,
-          },
+      if (_email.text == "" ||
+          _password.text == "" ||
+          _confirmPassword.text == "") {
+        // Check if any of the required fields are empty
+        showErrorDialog(
+          context,
+          "Please make sure to enter all the required fields.",
+          "Try Again",
+          'OK',
         );
-      }
-    }
-  } catch (err) {
-    // Handle sign-up errors
-    showDialog<String>(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('User already exists'),
-        content: const Text(
-            'Please go back to sign in page. Try sign in using login credentials associated with email. Go back to sign in page.'),
-        actions: <Widget>[
-          Row(
-            textDirection: TextDirection.rtl,
-            children: [
-              TextButton(
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => const EmailPasswordLoginPage(),
-                    ),
-                  );
-                },
-                child: const Text('Sign In'),
-                style: TextButton.styleFrom(
-                  foregroundColor: Colors.blue,
-                ),
-              ),
-              TextButton(
-                onPressed: () => Navigator.of(context).pop(),
-                child: const Text('Cancel'),
-                style: TextButton.styleFrom(
-                  foregroundColor: Colors.blue,
-                ),
-              ),
-            ],
-          ),
-        ],
-      ),
-    );
-  } finally {
-    setState(
-      () {
-        _isLoading = false; // hide loading indicator
-      },
-    );
-  }
-}
+      } else {
+        // Attempt to create a user
+        final userCredential =
+            await FirebaseAuth.instance.createUserWithEmailAndPassword(
+          email: _email.text,
+          password: _password.text,
+        );
 
+        // Show successful sign-up message to the user
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Sign Up Successful'),
+            duration: Duration(seconds: 2),
+            behavior: SnackBarBehavior.floating,
+          ),
+        );
+
+        // Delay navigation to the VerifyEmail page
+        await Future.delayed(Duration(seconds: 2));
+
+        // Navigate to the VerifyEmail page
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+            builder: (context) => VerifyEmail(),
+          ),
+        );
+
+        // Check if user creation was successful
+        if (userCredential.user != null) {
+          // Store user details in Firestore
+          String uid = userCredential.user!.uid;
+          currentUserId = uid;
+          DocumentReference userDetailsRef = FirebaseFirestore.instance
+              .collection('users')
+              .doc(uid)
+              .collection('user_details')
+              .doc();
+
+          // Set user details in Firestore
+          await userDetailsRef.set(
+            {
+              'name': _name.text,
+              'dateOfBirth': _dateOfBirthController.text,
+              'email': _email.text,
+            },
+          );
+        }
+      }
+    } catch (err) {
+      // Handle sign-up errors
+      showDialog<String>(
+        context: context,
+        builder: (context) => AlertDialog(
+          title: const Text('User already exists'),
+          content: const Text(
+              'Please go back to sign in page. Try sign in using login credentials associated with email. Go back to sign in page.'),
+          actions: <Widget>[
+            Row(
+              textDirection: TextDirection.rtl,
+              children: [
+                TextButton(
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const EmailPasswordLoginPage(),
+                      ),
+                    );
+                  },
+                  child: const Text('Sign In'),
+                  style: TextButton.styleFrom(
+                    foregroundColor: Colors.blue,
+                  ),
+                ),
+                TextButton(
+                  onPressed: () => Navigator.of(context).pop(),
+                  child: const Text('Cancel'),
+                  style: TextButton.styleFrom(
+                    foregroundColor: Colors.blue,
+                  ),
+                ),
+              ],
+            ),
+          ],
+        ),
+      );
+    } finally {
+      setState(
+        () {
+          _isLoading = false; // hide loading indicator
+        },
+      );
+    }
+  }
 
   // build the widget
   @override
   Widget build(BuildContext context) {
-    return  Scaffold(
+    return Scaffold(
       body: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.all(16.0),
@@ -212,76 +211,9 @@ Future<void> _handleSignUp() async {
                   'Welcome! to sign up page.',
                   style: TextStyle(fontSize: 15),
                 ),
-    
+
                 SizedBox(height: MediaQuery.of(context).size.height * 0.05),
-    
-                // name container
-                Container(
-                  decoration: BoxDecoration(
-                    border: Border.all(color: Colors.grey),
-                    borderRadius: BorderRadius.circular(5.0),
-                  ),
-                  padding: const EdgeInsets.symmetric(
-                      horizontal: 10.0, vertical: 5.0),
-                  child: TextFormField(
-                    autovalidateMode: AutovalidateMode.onUserInteraction,
-                    controller: _name,
-                    keyboardType:
-                        TextInputType.name, // @symbol for email in keyboard
-                    validator: (value) {
-                      if (checkValidName(value!)) {
-                        return null;
-                      } else {
-                        return 'Name must consist of only alphabets.';
-                      }
-                    },
-                    decoration: const InputDecoration(
-                      hintText: 'Name',
-                      icon: Icon(Icons.person),
-                      border: InputBorder.none,
-                    ),
-                  ),
-                ),
-    
-                SizedBox(height: 10),
-    
-                // dob container
-                Container(
-                  decoration: BoxDecoration(
-                    border: Border.all(color: Colors.grey),
-                    borderRadius: BorderRadius.circular(5.0),
-                  ),
-                  padding: const EdgeInsets.symmetric(
-                      horizontal: 10.0, vertical: 5.0),
-                  child: GestureDetector(
-                    onTap: () {
-                      _openDatePicker();
-                    },
-                    child: AbsorbPointer(
-                      absorbing: true,
-                      child: TextFormField(
-                        autovalidateMode: AutovalidateMode.onUserInteraction,
-                        readOnly: false,
-                        controller: _dateOfBirthController,
-                        validator: (value) {
-                          if (checkValidDOB(value!)) {
-                            return null;
-                          } else {
-                            return 'User must be 7 years or older.';
-                          }
-                        },
-                        decoration: InputDecoration(
-                          hintText: 'Date of Birth',
-                          icon: Icon(Icons.calendar_today),
-                          border: InputBorder.none,
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-    
-                SizedBox(height: 10),
-    
+
                 // email container
                 Container(
                   decoration: BoxDecoration(
@@ -309,9 +241,9 @@ Future<void> _handleSignUp() async {
                     ),
                   ),
                 ),
-    
+
                 SizedBox(height: 10),
-    
+
                 // password container
                 Container(
                   decoration: BoxDecoration(
@@ -353,9 +285,9 @@ Future<void> _handleSignUp() async {
                     ),
                   ),
                 ),
-    
+
                 SizedBox(height: 10),
-    
+
                 // confirm password container
                 Container(
                   decoration: BoxDecoration(
@@ -399,9 +331,9 @@ Future<void> _handleSignUp() async {
                     ),
                   ),
                 ),
-    
+
                 SizedBox(height: 16),
-    
+
                 // Sign Up Cancel Buttons
                 Row(
                   textDirection: TextDirection.rtl,
@@ -444,3 +376,5 @@ Future<void> _handleSignUp() async {
     );
   }
 }
+
+String currentUserId = '';

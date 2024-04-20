@@ -1,29 +1,49 @@
 import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:codesphere/auth/signup_page.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 
-class AuthServices{
-
+class AuthServices {
   //instances
   final FirebaseAuth auth = FirebaseAuth.instance;
   final FirebaseFirestore firestore = FirebaseFirestore.instance;
   final FirebaseStorage storage = FirebaseStorage.instance;
 
   //get current user
-  User? getCurentUser (){
+  User? getCurentUser() {
     return auth.currentUser;
+  }
+
+  // get current user image and name
+  Future<List<String>> getUserTile({required String uid}) async {
+    List<String> data = [];
+    data[0] = await firestore
+        .collection('users')
+        .doc(uid)
+        .collection('imageUrl')
+        .get() as String;
+    data[1] = await firestore
+        .collection('users')
+        .doc(uid)
+        .collection('username')
+        .get() as String;
+
+    return data;
   }
 
   // get data of current user
   // this will be used to get user data with uid as a map
   Future<Map<String, dynamic>> getUserData({required String uid}) async {
-    Map<String, dynamic> data = await firestore.collection('users').doc(uid).get() as Map<String, dynamic>;
+    Map<String, dynamic> data = await firestore
+        .collection('users')
+        .doc(uid)
+        .get() as Map<String, dynamic>;
     return data;
   }
 
   //signout
-  Future<void> signOut () async {
+  Future<void> signOut() async {
     return await auth.signOut();
   }
 
@@ -32,30 +52,24 @@ class AuthServices{
     required String email,
     required String password,
   }) async {
-    try{
+    try {
       UserCredential userCredential = await auth.signInWithEmailAndPassword(
-          email: email,
-          password: password
-      );
+          email: email, password: password);
       return userCredential;
-    }
-    on FirebaseAuthException catch (e) {
+    } on FirebaseAuthException catch (e) {
       throw Exception(e.code);
     }
   }
 
   // check if user exists
-  Future<UserCredential> signup({
-    required String email,
-    required String password
-  }) async {
+  Future<UserCredential> signup(
+      {required String email, required String password}) async {
     try {
-      UserCredential userCredential =  await auth.createUserWithEmailAndPassword(
+      UserCredential userCredential = await auth.createUserWithEmailAndPassword(
           email: email, password: password);
       // if no error, then return userCredentials
       return userCredential;
-    }
-    on FirebaseAuthException catch (error) {
+    } on FirebaseAuthException catch (error) {
       // read from firebase auth and handle all errors.
       throw Exception(error.code);
     }
@@ -67,7 +81,8 @@ class AuthServices{
       // file name according to user id
       String fileName = '${userId}_photo';
       // referwnce to the storage
-      Reference firebaseStorageRef = FirebaseStorage.instance.ref()
+      Reference firebaseStorageRef = FirebaseStorage.instance
+          .ref()
           .child('users')
           .child(userId)
           .child(fileName);
@@ -79,7 +94,7 @@ class AuthServices{
 
       return downloadURL;
     } catch (e) {
-      //print('Error uploading image to Firebase Storage: $e');
+      print('Error uploading image to Firebase Storage: $e');
       return '';
     }
   }
@@ -90,7 +105,8 @@ class AuthServices{
       // Get the file name
       String fileName = '${userId}_resume';
       // Create a reference to the location you want to upload to in Firebase Storage
-      Reference firebaseStorageRef = FirebaseStorage.instance.ref()
+      Reference firebaseStorageRef = FirebaseStorage.instance
+          .ref()
           .child('users')
           .child(userId)
           .child(fileName);
@@ -103,55 +119,51 @@ class AuthServices{
 
       return downloadURL;
     } catch (e) {
-      //print('Error uploading PDF to Firebase Storage: $e');
+      print('Error uploading PDF to Firebase Storage: $e');
       return '';
     }
   }
 
   // after user successful signup, save his data in firestore
-  Future<UserCredential> saveData ({
-    required UserCredential userCredential,
-    required String name,
-    required String username,
-    required String email,
-    required String gender,
-    required String bio,
-    required String tShirtSize,
-    required String degree,
-    required String college,
-    required String field,
-    required String passingYear,
-    required List<String> skills,
-    required String linkedin,
-    required String github,
-    required String photo,
-    required String resume
-  }) async {
-    try{
+  Future<void> saveData(
+      {//required UserCredential userCredential,
+      required String name,
+      required String username,
+      required String email,
+      required String gender,
+      required String bio,
+      required String tShirtSize,
+      required String degree,
+      required String college,
+      required String field,
+      required String passingYear,
+      required List<String> skills,
+      required String linkedin,
+      required String github,
+      required String photo,
+      required String resume}) async {
+    try {
       //add user to the list of users
-      firestore.collection('users').doc(userCredential.user!.uid).set(
-          {
-            'uid': userCredential.user!.uid,
-            'email': userCredential.user!.email,
-            'name' : name,
-            'username': username,
-            'gender': gender,
-            'bio': bio,
-            'size': tShirtSize,
-            'degree': degree,
-            'college': college,
-            'field': field,
-            'passyear': passingYear,
-            'skills': skills,
-            'linkedin': linkedin,
-            'github': github,
-            'photo': photo,
-            'resume': resume,
-          }
-      );
-      return userCredential;
-    }
-    on FirebaseAuthException catch (e){
+      firestore.collection('users').doc(currentUserId).set({
+        'uid': currentUserId,
+        'email': email,
+        'name': name,
+        'username': username,
+        'gender': gender,
+        'bio': bio,
+        'size': tShirtSize,
+        'degree': degree,
+        'college': college,
+        'field': field,
+        'passyear': passingYear,
+        'skills': skills,
+        'linkedin': linkedin,
+        'github': github,
+        'photo': photo,
+        'resume': resume,
+      });
+      return ;
+    } on FirebaseAuthException catch (e) {
       throw Exception(e.code);
     }
   }
@@ -168,7 +180,8 @@ class AuthServices{
     required String logo,
     required String cover,
     required List<String> screenshots,
-    required String platforms, // comma seperated platform names, later we will seperate them and use
+    required String
+        platforms, // comma seperated platform names, later we will seperate them and use
     required String teamUid,
   }) async {
     try {
@@ -188,8 +201,7 @@ class AuthServices{
         'createdAt': FieldValue.serverTimestamp(),
       });
       return ref.id;
-    }
-    catch (error) {
+    } catch (error) {
       rethrow;
     }
   }
@@ -249,19 +261,20 @@ class AuthServices{
     return await firestore.collection('hackathons').get();
   }
 
-
   // on organiser side get all the list of organised hackathons
   // it will return the complete list of data not id
   Future<List<Map<String, dynamic>>> getOrganiseHacks() async {
     List<Map<String, dynamic>> list = [];
     final data = await firestore.collection('users').doc().get();
-    for(String a in data['organized']){
-      Map<String, dynamic> temp = await firestore.collection('hackathons').doc(a).get() as Map<String, dynamic>;
+    for (String a in data['organized']) {
+      Map<String, dynamic> temp = await firestore
+          .collection('hackathons')
+          .doc(a)
+          .get() as Map<String, dynamic>;
       list.add(temp);
     }
     return list;
   }
-
 
   // addTeam
   Future<String> addTeam({
@@ -300,21 +313,18 @@ class AuthServices{
   }) async {
     try {
       final teamData = await firestore.collection('teams').doc(teamId).get();
-      if(teamData['memberIds'].length < teamData['maxSize']){
+      if (teamData['memberIds'].length < teamData['maxSize']) {
         await firestore.collection('teams').doc(teamId).update({
           'memberIds': FieldValue.arrayUnion([userId]),
         });
         return 'success';
-      }
-      else{
+      } else {
         return 'full';
       }
-    }
-    catch (error){
+    } catch (error) {
       throw 'Error joining team';
     }
   }
-
 
   // update team score or status
   Future<void> updateTeamStatusAndScore({

@@ -215,6 +215,7 @@ class AuthServices {
     required List<String> theme,
     required String prize,
     required int maxTeamSize,
+    required int minTeamSize,
     required List<String> links,
     required DateTime applicationStartDate,
     required DateTime applicationEndDate,
@@ -225,6 +226,7 @@ class AuthServices {
     required List<List<String>> partners,
     required List<List<String>> faqs,
     required String coverImageUrl,
+    required String email,
   }) async {
     try {
       DocumentReference ref = await firestore.collection('hackathons').add({
@@ -235,6 +237,7 @@ class AuthServices {
         'theme': theme,
         'prize': prize,
         'maxTeamSize': maxTeamSize,
+        'minTeamSize': minTeamSize,
         'links': links,
         'applicationStartDate': applicationStartDate,
         'applicationEndDate': applicationEndDate,
@@ -245,7 +248,8 @@ class AuthServices {
         'partners': partners,
         'faqs': faqs,
         'coverImageUrl': coverImageUrl,
-        'createdAt': FieldValue.serverTimestamp(),
+        'email': email,
+            'createdAt': FieldValue.serverTimestamp(),
       });
       await firestore.collection('users').doc(organiserUserId).update({
         'organized': FieldValue.arrayUnion([ref.id])

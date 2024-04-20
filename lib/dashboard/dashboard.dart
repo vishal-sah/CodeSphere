@@ -2,6 +2,7 @@ import 'package:codesphere/auth/login_page.dart';
 import 'package:codesphere/dashboard/hackathon_page.dart';
 import 'package:codesphere/firebase/firebase_functions.dart';
 import 'package:codesphere/landingPage/landing_page.dart';
+import 'package:codesphere/screens/create_hackathon_page.dart';
 import 'package:codesphere/screens/edit_profile.dart';
 import 'package:flutter/material.dart';
 
@@ -139,9 +140,15 @@ class _DashBoardState extends State<DashBoard> {
                           },
                           position: PopupMenuPosition.under,
                           onSelected: (value) {
-                            // if (value == 1) {
-                            // } else if (value == 2) {
-                            // } else {}
+                            if (value == 1) {
+                            } else if (value == 2) {
+                            } else if (value == 3) {
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) =>
+                                          CreateHackathonPage()));
+                            }
                             if (value == 4) {
                               auth.signOut();
                               Navigator.pushReplacement(

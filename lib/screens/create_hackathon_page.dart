@@ -1,3 +1,5 @@
+import 'package:codesphere/dashboard/dashboard.dart';
+import 'package:codesphere/firebase/firebase_functions.dart';
 import 'package:codesphere/widgets/custom_text_field.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -16,8 +18,8 @@ class _CreateHackathonPageState extends State<CreateHackathonPage> {
   String? _name;
   String? _collegeName;
   String? _about;
-  List<String?> _themes = [];
-  List<String?> _prizes = [];
+  List<String> _themes = [];
+  String? _prizes;
   int? _maxTeamSize;
   int? _minTeamSize;
   String? _linkedinLink;
@@ -30,8 +32,9 @@ class _CreateHackathonPageState extends State<CreateHackathonPage> {
   DateTime? _endDate;
   DateTime? _midEvaluationDate;
   DateTime? _resultDate;
-  List<String?> _partners = [];
-  List<List<String?>> _faqs = [];
+  List<List<String>> _partners = [];
+  List<List<String>> _faqs = [];
+  final AuthServices auth = AuthServices();
 
   Future<void> _selectDate(
     BuildContext context,
@@ -53,120 +56,172 @@ class _CreateHackathonPageState extends State<CreateHackathonPage> {
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
-    return Form(
-      key: _formKey,
-      child: ListView(
-        padding: EdgeInsets.symmetric(horizontal: size.width * 0.15),
-        children: [
-          const SizedBox(height: 20.0),
-          const Text(
-            'Organize Hackathon',
-            style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-            textAlign: TextAlign.center,
+    return Scaffold(
+      appBar: AppBar(),
+      body: Padding(
+        padding: EdgeInsets.symmetric(horizontal: size.width * 0.08),
+        child: SingleChildScrollView(
+          child: Column(
+            children: [
+              Form(
+                key: _formKey,
+                child: Column(
+                  children: [
+                    const SizedBox(height: 20.0),
+                    const Text(
+                      'Organize Hackathon',
+                      style:
+                          TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                      textAlign: TextAlign.center,
+                    ),
+                    CustomTextField(
+                      labelText: 'HACKATHON NAME',
+                      onChanged: (value) => _name = value,
+                    ),
+                    CustomTextField(
+                      labelText: 'COLLEGE NAME',
+                      onChanged: (value) => _collegeName = value,
+                    ),
+                    CustomTextField(
+                      labelText: 'ABOUT',
+                      maxLines: 5,
+                      onChanged: (value) => _about = value,
+                    ),
+                    CustomTextField(
+                      labelText: 'MIN TEAM SIZE',
+                      onChanged: (value) => _minTeamSize = int.tryParse(value),
+                    ),
+                    CustomTextField(
+                      labelText: 'MAX TEAM SIZE',
+                      onChanged: (value) => _maxTeamSize = int.tryParse(value),
+                    ),
+                    CustomTextField(
+                      labelText: 'THEMES (Comma separated)',
+                      maxLines: 3,
+                      onChanged: (value) => _themes = value.split(','),
+                    ),
+                    CustomTextField(
+                      labelText: 'LINKEDIN',
+                      onChanged: (value) => _linkedinLink = value,
+                    ),
+                    CustomTextField(
+                      labelText: 'INSTAGRAM',
+                      onChanged: (value) => _instagramLink = value,
+                    ),
+                    CustomTextField(
+                      labelText: 'WEBSITE',
+                      onChanged: (value) => _website = value,
+                    ),
+                    CustomTextField(
+                      labelText: 'EMAIL',
+                      onChanged: (value) => _email = value,
+                    ),
+                    buildDateField(
+                      'APPLICATION START DATE',
+                      _applicationStartDate,
+                      (value) => _applicationStartDate = value,
+                    ),
+                    buildDateField(
+                      'APPLICATION END DATE',
+                      _applicationEndDate,
+                      (value) => _applicationEndDate = value,
+                    ),
+                    buildDateField(
+                      'START DATE',
+                      _startDate,
+                      (value) => _startDate = value,
+                    ),
+                    buildDateField(
+                      'END DATE',
+                      _endDate,
+                      (value) => _endDate = value,
+                    ),
+                    buildDateField(
+                      'MID EVALUATION DATE',
+                      _midEvaluationDate,
+                      (value) => _midEvaluationDate = value,
+                    ),
+                    buildDateField(
+                      'RESULT DATE',
+                      _resultDate,
+                      (value) => _resultDate = value,
+                    ),
+                    CustomTextField(
+                      labelText:
+                          'PARTNERS & LINKS(Comma separated) e.g. Part1:Link1,Part2:Link2',
+                      maxLines: 3,
+                      onChanged: (value) {
+                        final partner = value.split(',');
+                        _partners =
+                            partner.map((faq) => faq.split(':')).toList();
+                      },
+                    ),
+                    CustomTextField(
+                      labelText: 'PRIZES',
+                      maxLines: 3,
+                      onChanged: (value) => _prizes = value,
+                    ),
+                    CustomTextField(
+                      labelText: 'FAQs (Comma separated) e.g. Q1:A1,Q2:A2',
+                      maxLines: 3,
+                      onChanged: (value) {
+                        final faqs = value.split(',');
+                        _faqs = faqs.map((faq) => faq.split(':')).toList();
+                      },
+                    ),
+                    const SizedBox(height: 20.0),
+                    Padding(
+                      padding:
+                          EdgeInsets.symmetric(horizontal: size.width * 0.25),
+                      child: MaterialButton(
+                        color: Colors.blue,
+                        onPressed: () async {
+                          if (_formKey.currentState!.validate()) {
+                            // Save data to database
+                            await auth.addHackathon(
+                              name: _name!,
+                              organiserUserId: auth.getCurentUser()!.uid,
+                              collegeName: _collegeName!,
+                              about: _about!,
+                              theme: _themes,
+                              prize: _prizes!,
+                              maxTeamSize: _maxTeamSize!,
+                              minTeamSize: _minTeamSize!,
+                              links: [
+                                _linkedinLink!,
+                                _instagramLink!,
+                                _website!
+                              ],
+                              email: _email!,
+                              applicationStartDate: _applicationStartDate!,
+                              applicationEndDate: _applicationEndDate!,
+                              hackathonStartDate: _startDate!,
+                              hackathonEndDate: _endDate!,
+                              midEvaluationDate: _midEvaluationDate!,
+                              resultDate: _resultDate!,
+                              partners: _partners,
+                              faqs: _faqs,
+                              coverImageUrl: '',
+                            );
+                            Navigator.pushReplacement(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => DashBoard()));
+                          }
+                        },
+                        child: const Text(
+                          'CREATE HACKATHON',
+                          textAlign: TextAlign.center,
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 40.0),
+                  ],
+                ),
+              ),
+            ],
           ),
-          CustomTextField(
-            labelText: 'HACKATHON NAME',
-            onChanged: (value) => _name = value,
-          ),
-          CustomTextField(
-            labelText: 'COLLEGE NAME',
-            onChanged: (value) => _collegeName = value,
-          ),
-          CustomTextField(
-            labelText: 'ABOUT',
-            maxLines: 5,
-            onChanged: (value) => _about = value,
-          ),
-          CustomTextField(
-            labelText: 'MIN TEAM SIZE',
-            onChanged: (value) => _minTeamSize = int.tryParse(value),
-          ),
-          CustomTextField(
-            labelText: 'MAX TEAM SIZE',
-            onChanged: (value) => _maxTeamSize = int.tryParse(value),
-          ),
-          CustomTextField(
-            labelText: 'THEMES (Comma separated)',
-            maxLines: 3,
-            onChanged: (value) => _themes = value.split(','),
-          ),
-          CustomTextField(
-            labelText: 'LINKEDIN',
-            onChanged: (value) => _linkedinLink = value,
-          ),
-          CustomTextField(
-            labelText: 'INSTAGRAM',
-            onChanged: (value) => _instagramLink = value,
-          ),
-          CustomTextField(
-            labelText: 'WEBSITE',
-            onChanged: (value) => _website = value,
-          ),
-          CustomTextField(
-            labelText: 'EMAIL',
-            onChanged: (value) => _email = value,
-          ),
-          buildDateField(
-            'APPLICATION START DATE',
-            _applicationStartDate,
-            (value) => _applicationStartDate = value,
-          ),
-          buildDateField(
-            'APPLICATION END DATE',
-            _applicationEndDate,
-            (value) => _applicationEndDate = value,
-          ),
-          buildDateField(
-            'START DATE',
-            _startDate,
-            (value) => _startDate = value,
-          ),
-          buildDateField(
-            'END DATE',
-            _endDate,
-            (value) => _endDate = value,
-          ),
-          buildDateField(
-            'MID EVALUATION DATE',
-            _midEvaluationDate,
-            (value) => _midEvaluationDate = value,
-          ),
-          buildDateField(
-            'RESULT DATE',
-            _resultDate,
-            (value) => _resultDate = value,
-          ),
-          CustomTextField(
-            labelText: 'PARTNERS (Comma separated)',
-            onChanged: (value) => _partners = value.split(','),
-          ),
-          CustomTextField(
-            labelText: 'PRIZES (Comma separated)',
-            maxLines: 3,
-            onChanged: (value) => _prizes = value.split(','),
-          ),
-          CustomTextField(
-            labelText: 'FAQs (Comma separated) e.g. Q1:A1,Q2:A2',
-            maxLines: 3,
-            onChanged: (value) {
-              final faqs = value.split(',');
-              _faqs = faqs.map((faq) => faq.split(':')).toList();
-            },
-          ),
-          const SizedBox(height: 20.0),
-          Padding(
-            padding: EdgeInsets.symmetric(horizontal: size.width * 0.25),
-            child: ElevatedButton(
-              onPressed: () {
-                if (_formKey.currentState!.validate()) {
-                  // Save data to database
-                }
-              },
-              child: const Text('CREATE HACKATHON'),
-            ),
-          ),
-          const SizedBox(height: 40.0),
-        ],
+        ),
       ),
     );
   }
@@ -189,4 +244,3 @@ class _CreateHackathonPageState extends State<CreateHackathonPage> {
     );
   }
 }
-

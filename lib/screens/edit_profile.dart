@@ -2,10 +2,11 @@ import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:codesphere/firebase/firebase_functions.dart';
 import 'package:file_picker/file_picker.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
-
+import 'package:path/path.dart' as path;
 
 class ProfileForm extends StatefulWidget {
   const ProfileForm({super.key});
@@ -98,15 +99,48 @@ class _ProfileFormState extends State<ProfileForm> {
   //   }
   // }
 
+  final _picker = ImagePicker();
+
+  // ignore: non_constant_identifier_names
+  final FirebaseStorage storage = FirebaseStorage.instance;
+
   Future<void> pickImage() async {
-    final picker = ImagePicker();
-    final pickedImage = await picker.pickImage(source: ImageSource.gallery);
+    final XFile? pickedImage =
+        await _picker.pickImage(source: ImageSource.gallery);
     if (pickedImage != null) {
-      _profilePicture = File(pickedImage.path);
-    } else {
-      //return null;
+      setState(() {
+        _profilePicture = File(pickedImage.path);
+      });
+      print('Image picked');
+      try {
+        // Upload file to Firebase Storage
+        await uploadImage(_profilePicture!);
+      } catch (e) {
+        print(e);
+      }
     }
   }
+
+  Future<void> uploadImage(File file) async {
+    try {
+      Reference ref = storage.ref().child('images/${path.basename(file.path)}');
+      await ref.putFile(file);
+      photo = await ref.getDownloadURL();
+      print('File uploaded successfully.');
+    } catch (e) {
+      print(e);
+    }
+  }
+
+  // Future<void> pickImage() async {
+  //   final picker = ImagePicker();
+  //   final pickedImage = await picker.pickImage(source: ImageSource.gallery);
+  //   if (pickedImage != null) {
+  //     _profilePicture = File(pickedImage.path);
+  //   } else {
+  //     //return null;
+  //   }
+  // }
 
   Future<void> pickResume() async {
     FilePickerResult? result = await FilePicker.platform.pickFiles(
@@ -117,6 +151,19 @@ class _ProfileFormState extends State<ProfileForm> {
       setState(() {
         _resume = File(result.files.single.path!);
       });
+      await uploadResume(_resume!);
+    }
+  }
+
+  Future<void> uploadResume(File file) async {
+    try {
+      Reference ref =
+          storage.ref().child('resumes/${path.basename(file.path)}');
+      await ref.putFile(file);
+      resume = await ref.getDownloadURL();
+      print('File uploaded successfully.');
+    } catch (e) {
+      print(e);
     }
   }
 
@@ -175,7 +222,10 @@ class _ProfileFormState extends State<ProfileForm> {
     print('rebuilt');
     return SingleChildScrollView(
       child: FutureBuilder(
-          future: firestore.collection('users').doc(auth.getCurentUser()!.uid).get(),
+          future: firestore
+              .collection('users')
+              .doc(auth.getCurentUser()!.uid)
+              .get(),
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
               return const Center(child: CircularProgressIndicator());
@@ -183,7 +233,8 @@ class _ProfileFormState extends State<ProfileForm> {
               if (snapshot.hasError) {
                 return Text('Error: ${snapshot.error}');
               } else {
-                Map<String, dynamic> data = snapshot.data!.data()! as Map<String, dynamic>;
+                Map<String, dynamic> data =
+                    snapshot.data!.data()! as Map<String, dynamic>;
                 nameController.text = data['name'];
                 contactController.text = data['email'];
                 selectedGender = data['gender'];
@@ -196,6 +247,8 @@ class _ProfileFormState extends State<ProfileForm> {
                 skillsController.text = data['skills'].join(', ');
                 githubController.text = data['github'];
                 linkedinController.text = data['linkedin'];
+                photo = data['photo'];
+                resume = data['resume'];
                 return Form(
                   key: _formKey,
                   child: size.width <= 720
@@ -227,6 +280,15 @@ class _ProfileFormState extends State<ProfileForm> {
                                 child: const Text('Pick Resume'),
                               ),
                             ),
+                            Container(
+                              alignment: Alignment.center,
+                              width: double.infinity,
+                              height: 300,
+                              color: Colors.grey[300],
+                              child: resume != 'temp'
+                                  ? Text(resume!)
+                                  : const Text('Please select a resume'),
+                            ),
                             Padding(
                               padding: EdgeInsets.only(
                                 left: size.width * 0.01,
@@ -240,6 +302,15 @@ class _ProfileFormState extends State<ProfileForm> {
                                 onPressed: pickImage,
                                 child: const Text('Pick Profile Picture'),
                               ),
+                            ),
+                            Container(
+                              alignment: Alignment.center,
+                              width: double.infinity,
+                              height: 300,
+                              color: Colors.grey[300],
+                              child: photo != 'temp'
+                                  ? Image.network(photo!)
+                                  : const Text('Please select an image'),
                             ),
                             ProfileDropdownFormField(
                               value: selectedGender,

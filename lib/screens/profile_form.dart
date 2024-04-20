@@ -89,16 +89,6 @@ class _ProfileSectionState extends State<ProfileSection> {
   // }
 
   final _picker = ImagePicker();
-  // // Implementing the image picker
-  // Future<void> _openImagePicker() async {
-  //   final XFile? pickedImage =
-  //       await _picker.pickImage(source: ImageSource.gallery);
-  //   if (pickedImage != null) {
-  //     setState(() {
-  //       _profilePicture = File(pickedImage.path);
-  //     });
-  //   }
-  // }
 
   // ignore: non_constant_identifier_names
   final FirebaseStorage storage = FirebaseStorage.instance;
@@ -110,6 +100,7 @@ class _ProfileSectionState extends State<ProfileSection> {
       setState(() {
         _profilePicture = File(pickedImage.path);
       });
+      print('Image picked');
       try {
         // Upload file to Firebase Storage
         await uploadFile(_profilePicture!);
@@ -149,6 +140,19 @@ class _ProfileSectionState extends State<ProfileSection> {
       setState(() {
         _resume = File(result.files.single.path!);
       });
+      await uploadResume(_resume!);
+    }
+  }
+
+  Future<void> uploadResume(File file) async {
+    try {
+      Reference ref =
+          storage.ref().child('resumes/${path.basename(file.path)}');
+      await ref.putFile(file);
+      resume = await ref.getDownloadURL();
+      print('File uploaded successfully.');
+    } catch (e) {
+      print(e);
     }
   }
 
@@ -236,6 +240,15 @@ class _ProfileSectionState extends State<ProfileSection> {
                     onPressed: pickResume,
                     child: const Text('Pick Resume'),
                   ),
+                ),
+                Container(
+                  alignment: Alignment.center,
+                  width: double.infinity,
+                  height: 300,
+                  color: Colors.grey[300],
+                  child: resume != 'temp'
+                      ? Text(resume!)
+                      : const Text('Please select a resume'),
                 ),
                 Padding(
                   padding: EdgeInsets.only(

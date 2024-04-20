@@ -7,6 +7,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:path/path.dart' as path;
+import 'package:syncfusion_flutter_pdfviewer/pdfviewer.dart';
 
 class ProfileForm extends StatefulWidget {
   const ProfileForm({super.key});
@@ -280,15 +281,25 @@ class _ProfileFormState extends State<ProfileForm> {
                                 child: const Text('Pick Resume'),
                               ),
                             ),
-                            Container(
-                              alignment: Alignment.center,
-                              width: double.infinity,
-                              height: 300,
-                              color: Colors.grey[300],
-                              child: resume != 'temp'
-                                  ? Text(resume!)
-                                  : const Text('Please select a resume'),
-                            ),
+                            if (resume != 'temp')
+                              MaterialButton(
+                                color: Colors.blue,
+                                onPressed: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => Scaffold(
+                                        body: Center(
+                                          child: SfPdfViewer.network(
+                                            resume!,
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  );
+                                },
+                                child: const Text('View Resume'),
+                              ),
                             Padding(
                               padding: EdgeInsets.only(
                                 left: size.width * 0.01,
@@ -303,15 +314,14 @@ class _ProfileFormState extends State<ProfileForm> {
                                 child: const Text('Pick Profile Picture'),
                               ),
                             ),
-                            Container(
-                              alignment: Alignment.center,
-                              width: double.infinity,
-                              height: 300,
-                              color: Colors.grey[300],
-                              child: photo != 'temp'
-                                  ? Image.network(photo!)
-                                  : const Text('Please select an image'),
-                            ),
+                            if (photo != 'temp')
+                              Container(
+                                alignment: Alignment.center,
+                                width: double.infinity,
+                                height: 300,
+                                color: Colors.grey[300],
+                                child: Image.network(photo!),
+                              ),
                             ProfileDropdownFormField(
                               value: selectedGender,
                               labelText: 'GENDER',

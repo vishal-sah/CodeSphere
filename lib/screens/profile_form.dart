@@ -8,6 +8,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:path/path.dart' as path;
+import 'package:syncfusion_flutter_pdfviewer/pdfviewer.dart';
 
 class ProfileSection extends StatefulWidget {
   const ProfileSection({super.key});
@@ -247,8 +248,8 @@ class _ProfileSectionState extends State<ProfileSection> {
                   height: 300,
                   color: Colors.grey[300],
                   child: resume != 'temp'
-                      ? Text(resume!)
-                      : const Text('Please select a resume'),
+                      ? SfPdfViewer.network(resume!)
+                      : const Text(''),
                 ),
                 Padding(
                   padding: EdgeInsets.only(

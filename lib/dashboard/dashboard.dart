@@ -2,7 +2,7 @@ import 'package:codesphere/auth/login_page.dart';
 import 'package:codesphere/dashboard/hackathon_page.dart';
 import 'package:codesphere/firebase/firebase_functions.dart';
 import 'package:codesphere/landingPage/landing_page.dart';
-import 'package:codesphere/screens/create_account_page.dart';
+import 'package:codesphere/screens/edit_profile.dart';
 import 'package:flutter/material.dart';
 
 class DashBoard extends StatefulWidget {

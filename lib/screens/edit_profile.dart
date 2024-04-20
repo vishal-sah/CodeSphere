@@ -459,9 +459,9 @@ class _ProfileFormState extends State<ProfileForm> {
                                           }
                                         }
                                       }
-                                    : () {
+                                    : () async {
                                         if (photo != null && resume != null) {
-                                          auth.saveData(
+                                          await auth.saveData(
                                             name: nameController.text,
                                             username: nameController.text,
                                             email: contactController.text,
@@ -480,6 +480,9 @@ class _ProfileFormState extends State<ProfileForm> {
                                             photo: photo!,
                                             resume: resume!,
                                           );
+                                          setState(() {
+                                            
+                                          });
                                         } else {
                                           ScaffoldMessenger.of(context)
                                               .showSnackBar(

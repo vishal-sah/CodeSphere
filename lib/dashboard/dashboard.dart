@@ -3,7 +3,6 @@ import 'package:codesphere/dashboard/hackathon_page.dart';
 import 'package:codesphere/firebase/firebase_functions.dart';
 import 'package:codesphere/landingPage/landing_page.dart';
 import 'package:codesphere/screens/create_account_page.dart';
-import 'package:codesphere/screens/profile_form.dart';
 import 'package:flutter/material.dart';
 
 class DashBoard extends StatefulWidget {
@@ -149,7 +148,7 @@ class _DashBoardState extends State<DashBoard> {
                                   context,
                                   MaterialPageRoute(
                                       builder: (context) =>
-                                          LandingPage(initialPage: 0)));
+                                          const LandingPage(initialPage: 0)));
                             }
                           },
                           child: FutureBuilder(
@@ -176,9 +175,9 @@ class _DashBoardState extends State<DashBoard> {
                                 context,
                                 MaterialPageRoute(
                                     builder: (context) =>
-                                        EmailPasswordLoginPage()));
+                                        const EmailPasswordLoginPage()));
                           },
-                          child: Text('SignIn')),
+                          child: const Text('SignIn')),
                 ],
               ),
             ],

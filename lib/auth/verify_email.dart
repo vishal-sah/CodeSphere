@@ -1,12 +1,11 @@
 import 'dart:async';
-import 'package:codesphere/dashboard/dashboard.dart';
-import 'package:codesphere/screens/create_account_page.dart';
 import 'package:codesphere/screens/profile_form.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:codesphere/auth/dashboard_page.dart';
 
 class VerifyEmail extends StatefulWidget {
+  const VerifyEmail({super.key});
+
   @override
   _VerifyEmailState createState() => _VerifyEmailState();
 }
@@ -29,7 +28,7 @@ class _VerifyEmailState extends State<VerifyEmail> {
         sendVerificationEmail();
 
         timer = Timer.periodic(
-          Duration(seconds: 5),
+          const Duration(seconds: 5),
           (_) => checkEmailVerified(),
         );
       }
@@ -52,18 +51,18 @@ class _VerifyEmailState extends State<VerifyEmail> {
       await user?.sendEmailVerification();
 
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
+        const SnackBar(
           content: Text('Verification email sent successfully.'),
         ),
       );
 
       setState(() => canResendEmail = false);
-      await Future.delayed(Duration(seconds: 5));
+      await Future.delayed(const Duration(seconds: 5));
       setState(() => canResendEmail = true);
     } on Exception catch (e) {
       print(e);
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
+        const SnackBar(
           content: Text('Failed to send verification email.'),
         ),
       );
@@ -90,42 +89,42 @@ class _VerifyEmailState extends State<VerifyEmail> {
     return isEmailVerified
         ? Scaffold(
             appBar: AppBar(
-              title: Text('Provide your details'),
+              title: const Text('Provide your details'),
             ),
-            body: ProfileSection(),
+            body: const ProfileSection(),
           )
         : Scaffold(
             appBar: AppBar(
-              title: Text('Verify Email'),
+              title: const Text('Verify Email'),
             ),
             body: Padding(
-              padding: EdgeInsets.all(16.0),
+              padding: const EdgeInsets.all(16.0),
               child: Center(
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Text(
+                    const Text(
                       'Please verify your email.',
                       textAlign: TextAlign.center,
                     ),
-                    SizedBox(height: 10.0),
+                    const SizedBox(height: 10.0),
                     ElevatedButton.icon(
-                      icon: Icon(Icons.email),
-                      label: Text('Resend Email'),
+                      icon: const Icon(Icons.email),
+                      label: const Text('Resend Email'),
                       onPressed: canResendEmail ? sendVerificationEmail : null,
                       style: ElevatedButton.styleFrom(
                         backgroundColor:
                             canResendEmail ? Colors.blue : Colors.grey,
                       ),
                     ),
-                    SizedBox(height: 10.0),
+                    const SizedBox(height: 10.0),
                     ElevatedButton(
-                      child: Text('Cancel'),
+                      child: const Text('Cancel'),
                       onPressed: () {
                         Navigator.of(context).pop();
                       },
                     ),
-                    if (_isLoading) CircularProgressIndicator(),
+                    if (_isLoading) const CircularProgressIndicator(),
                   ],
                 ),
               ),

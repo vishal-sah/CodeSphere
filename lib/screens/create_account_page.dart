@@ -1,6 +1,5 @@
 import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:codesphere/auth/signup_page.dart';
 import 'package:codesphere/firebase/firebase_functions.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/foundation.dart';
@@ -421,7 +420,7 @@ class _ProfileFormState extends State<ProfileForm> {
                             const SizedBox(height: 40.0),
                           ],
                         )
-                      : Row(
+                      : const Row(
                           children: [],
                         ),
                 );

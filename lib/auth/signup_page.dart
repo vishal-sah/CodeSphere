@@ -1,4 +1,3 @@
-import "package:cloud_firestore/cloud_firestore.dart";
 import "package:firebase_auth/firebase_auth.dart";
 import "package:firebase_core/firebase_core.dart";
 import "package:codesphere/auth/alert_dialog.dart";
@@ -117,7 +116,7 @@ class _SignUpPageState extends State<SignUpPage> {
         );
 
         // Delay navigation to the VerifyEmail page
-        await Future.delayed(Duration(seconds: 2));
+        await Future.delayed(const Duration(seconds: 2));
 
         // Navigate to the VerifyEmail page
         Navigator.pushReplacement(
@@ -207,7 +206,7 @@ class _SignUpPageState extends State<SignUpPage> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 SizedBox(height: MediaQuery.of(context).size.height * 0.1),
-                Text(
+                const Text(
                   'Welcome! to sign up page.',
                   style: TextStyle(fontSize: 15),
                 ),
@@ -242,7 +241,7 @@ class _SignUpPageState extends State<SignUpPage> {
                   ),
                 ),
 
-                SizedBox(height: 10),
+                const SizedBox(height: 10),
 
                 // password container
                 Container(
@@ -251,7 +250,7 @@ class _SignUpPageState extends State<SignUpPage> {
                     borderRadius: BorderRadius.circular(5.0),
                   ),
                   padding:
-                      EdgeInsets.symmetric(horizontal: 10.0, vertical: 5.0),
+                      const EdgeInsets.symmetric(horizontal: 10.0, vertical: 5.0),
                   child: TextFormField(
                     autovalidateMode: AutovalidateMode.onUserInteraction,
                     controller: _password,
@@ -268,7 +267,7 @@ class _SignUpPageState extends State<SignUpPage> {
                     },
                     decoration: InputDecoration(
                       hintText: 'Password',
-                      icon: Icon(Icons.lock),
+                      icon: const Icon(Icons.lock),
                       border: InputBorder.none,
                       suffixIcon: IconButton(
                         icon: Icon(
@@ -286,7 +285,7 @@ class _SignUpPageState extends State<SignUpPage> {
                   ),
                 ),
 
-                SizedBox(height: 10),
+                const SizedBox(height: 10),
 
                 // confirm password container
                 Container(
@@ -295,7 +294,7 @@ class _SignUpPageState extends State<SignUpPage> {
                     borderRadius: BorderRadius.circular(5.0),
                   ),
                   padding:
-                      EdgeInsets.symmetric(horizontal: 10.0, vertical: 5.0),
+                      const EdgeInsets.symmetric(horizontal: 10.0, vertical: 5.0),
                   child: TextFormField(
                     autovalidateMode: AutovalidateMode.onUserInteraction,
                     controller: _confirmPassword,
@@ -310,7 +309,7 @@ class _SignUpPageState extends State<SignUpPage> {
                       }
                     },
                     decoration: InputDecoration(
-                      icon: Icon(Icons.lock),
+                      icon: const Icon(Icons.lock),
                       hintText: 'Confirm Password',
                       border: InputBorder.none,
                       suffixIcon: IconButton(
@@ -332,7 +331,7 @@ class _SignUpPageState extends State<SignUpPage> {
                   ),
                 ),
 
-                SizedBox(height: 16),
+                const SizedBox(height: 16),
 
                 // Sign Up Cancel Buttons
                 Row(
@@ -348,13 +347,13 @@ class _SignUpPageState extends State<SignUpPage> {
                         foregroundColor: Colors.white,
                       ),
                     ),
-                    SizedBox(width: 10),
+                    const SizedBox(width: 10),
                     ElevatedButton(
                       onPressed: () {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => FirstPage(),
+                            builder: (context) => const FirstPage(),
                           ),
                         );
                       },
@@ -366,7 +365,7 @@ class _SignUpPageState extends State<SignUpPage> {
                     ),
                   ],
                 ),
-                SizedBox(height: 16),
+                const SizedBox(height: 16),
                 if (_isLoading) const CircularProgressIndicator(),
               ],
             ),

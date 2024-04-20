@@ -1,12 +1,13 @@
 import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:codesphere/auth/signup_page.dart';
 import 'package:codesphere/dashboard/dashboard.dart';
 import 'package:codesphere/firebase/firebase_functions.dart';
 import 'package:file_picker/file_picker.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:path/path.dart' as path;
 
 class ProfileSection extends StatefulWidget {
   const ProfileSection({super.key});
@@ -87,7 +88,7 @@ class _ProfileSectionState extends State<ProfileSection> {
   //   }
   // }
 
-  // final _picker = ImagePicker();
+  final _picker = ImagePicker();
   // // Implementing the image picker
   // Future<void> _openImagePicker() async {
   //   final XFile? pickedImage =
@@ -99,15 +100,45 @@ class _ProfileSectionState extends State<ProfileSection> {
   //   }
   // }
 
+  // ignore: non_constant_identifier_names
+  final FirebaseStorage storage = FirebaseStorage.instance;
+
   Future<void> pickImage() async {
-    final picker = ImagePicker();
-    final pickedImage = await picker.pickImage(source: ImageSource.gallery);
+    final XFile? pickedImage =
+        await _picker.pickImage(source: ImageSource.gallery);
     if (pickedImage != null) {
-      _profilePicture = File(pickedImage.path);
-    } else {
-      //return null;
+      setState(() {
+        _profilePicture = File(pickedImage.path);
+      });
+      try {
+        // Upload file to Firebase Storage
+        await uploadFile(_profilePicture!);
+      } catch (e) {
+        print(e);
+      }
     }
   }
+
+  Future<void> uploadFile(File file) async {
+    try {
+      Reference ref = storage.ref().child('images/${path.basename(file.path)}');
+      await ref.putFile(file);
+      photo = await ref.getDownloadURL();
+      print('File uploaded successfully.');
+    } catch (e) {
+      print(e);
+    }
+  }
+
+  // Future<void> pickImage() async {
+  //   final picker = ImagePicker();
+  //   final pickedImage = await picker.pickImage(source: ImageSource.gallery);
+  //   if (pickedImage != null) {
+  //     _profilePicture = File(pickedImage.path);
+  //   } else {
+  //     //return null;
+  //   }
+  // }
 
   Future<void> pickResume() async {
     FilePickerResult? result = await FilePicker.platform.pickFiles(
@@ -219,6 +250,15 @@ class _ProfileSectionState extends State<ProfileSection> {
                     onPressed: pickImage,
                     child: const Text('Pick Profile Picture'),
                   ),
+                ),
+                Container(
+                  alignment: Alignment.center,
+                  width: double.infinity,
+                  height: 300,
+                  color: Colors.grey[300],
+                  child: _profilePicture != null
+                      ? Image.file(_profilePicture!, fit: BoxFit.cover)
+                      : const Text('Please select an image'),
                 ),
                 ProfileDropdownFormField(
                   value: selectedGender,
@@ -373,7 +413,7 @@ class _ProfileSectionState extends State<ProfileSection> {
                               Navigator.pushReplacement(
                                   context,
                                   MaterialPageRoute(
-                                      builder: (context) => DashBoard()));
+                                      builder: (context) => const DashBoard()));
                             } else {
                               ScaffoldMessenger.of(context).showSnackBar(
                                 const SnackBar(
@@ -393,7 +433,7 @@ class _ProfileSectionState extends State<ProfileSection> {
                 const SizedBox(height: 40.0),
               ],
             )
-          : Row(
+          : const Row(
               children: [],
             ),
     ));

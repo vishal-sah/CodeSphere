@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:codesphere/dashboard/dashboard.dart';
+import 'package:codesphere/screens/create_account_page.dart';
 import 'package:codesphere/screens/profile_form.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -91,7 +92,7 @@ class _VerifyEmailState extends State<VerifyEmail> {
             appBar: AppBar(
               title: Text('Provide your details'),
             ),
-            body: ProfileForm(),
+            body: ProfileSection(),
           )
         : Scaffold(
             appBar: AppBar(

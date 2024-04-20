@@ -1,4 +1,6 @@
 import 'package:codesphere/auth/dashboard_page.dart';
+import 'package:codesphere/auth/signup_page.dart';
+import 'package:codesphere/dashboard/dashboard.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:codesphere/auth/first_page.dart';
@@ -78,7 +80,7 @@ class EmailPasswordLoginPageState extends State<EmailPasswordLoginPage> {
           Navigator.pushReplacement(
             context,
             MaterialPageRoute(
-              builder: (context) => const DashboardPage(),
+              builder: (context) => const DashBoard(),
             ),
           );
         } else {
@@ -222,21 +224,24 @@ class EmailPasswordLoginPageState extends State<EmailPasswordLoginPage> {
                     ),
                     SizedBox(width: MediaQuery.of(context).size.width * 0.1),
                     GestureDetector(
-                      child: Text(
-                        'Forgot Password?',
-                        style: TextStyle(
-                          color: Colors.blue,
-                          decoration: TextDecoration.underline,
-                        )
-                      ),
-                      onTap:() => Navigator.pushReplacement(
-                        context, 
-                        MaterialPageRoute(
-                          builder: (context) => ForgotPassword()
-                        )
-                      )
-                    )
+                        child: Text('Forgot Password?',
+                            style: TextStyle(
+                              color: Colors.blue,
+                              decoration: TextDecoration.underline,
+                            )),
+                        onTap: () => Navigator.pushReplacement(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => ForgotPassword())))
                   ],
+                ),
+                MaterialButton(
+                  onPressed: () {
+                    Navigator.pushReplacement(context,
+                        MaterialPageRoute(builder: (context) => SignUpPage()));
+                  },
+                  color: Colors.blue,
+                  child: Text('Create Account'),
                 ),
                 if (_isLoading) // if loading show circular progress indicator
                   const CircularProgressIndicator(),

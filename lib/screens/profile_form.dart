@@ -1,16 +1,20 @@
 import 'dart:io';
-
-import 'package:codesphere/widgets/custom_text_field.dart';
-import 'package:codesphere/widgets/dropdown_menu_form.dart';
+import 'package:codesphere/auth/signup_page.dart';
+import 'package:codesphere/firebase/firebase_functions.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+
+void main() {
+  runApp(MaterialApp(
+    home: ProfileForm(),
+  ));
+}
 
 class ProfileForm extends StatefulWidget {
   const ProfileForm({super.key});
 
   @override
-  // ignore: library_private_types_in_public_api
   _ProfileFormState createState() => _ProfileFormState();
 }
 
@@ -18,20 +22,24 @@ class _ProfileFormState extends State<ProfileForm> {
   final _formKey = GlobalKey<FormState>();
 
   // Define variables to hold user data
-  String? _name;
-  String? _contact;
-  String? _gender;
-  String? _tshirtSize;
-  String? _bio;
-  String? _educationDegree;
-  String? _collegeName;
-  String? _fieldOfStudy;
-  String? _expectedGraduation;
-  String? _skills;
-  String? _githubLink;
-  String? _linkedinLink;
   File? _profilePicture;
   File? _resume;
+  String selectedGender = 'Select';
+  String selectedSize = 'Select';
+  String degree = 'Select';
+  int year = 2024;
+  bool detailsChanged = false;
+  final TextEditingController nameController = TextEditingController();
+  final TextEditingController contactController = TextEditingController();
+  final TextEditingController bioController = TextEditingController();
+  final TextEditingController collegeController = TextEditingController();
+  final TextEditingController fieldController = TextEditingController();
+  final TextEditingController skillsController = TextEditingController();
+  final TextEditingController githubController = TextEditingController();
+  final TextEditingController linkedinController = TextEditingController();
+  String? photo = 'temp';
+  String? resume = 'temp';
+  final AuthServices auth = AuthServices();
 
   List<String> generateYears() {
     final List<String> years = [];
@@ -43,6 +51,7 @@ class _ProfileFormState extends State<ProfileForm> {
   }
 
   final List<String> tshirtSizes = [
+    'Select',
     'XS',
     'S',
     'M',
@@ -52,6 +61,7 @@ class _ProfileFormState extends State<ProfileForm> {
   ];
 
   final List<String> educationDegrees = [
+    'Select',
     'High School',
     'Associate',
     'Bachelor',
@@ -60,10 +70,23 @@ class _ProfileFormState extends State<ProfileForm> {
   ];
 
   final List<String> genders = [
+    'Select',
     'Male',
     'Female',
     'Other',
   ];
+
+  Future<void> pickProfilePicture() async {
+    FilePickerResult? result = await FilePicker.platform.pickFiles(
+      type: FileType.image,
+    );
+    if (result != null) {
+      Uint8List bytes = result.files.single.bytes!;
+      setState(() {
+        _profilePicture = File.fromRawPath(bytes);
+      });
+    }
+  }
 
   Future<void> pickResume() async {
     FilePickerResult? result = await FilePicker.platform.pickFiles(
@@ -72,204 +95,391 @@ class _ProfileFormState extends State<ProfileForm> {
     );
     if (result != null) {
       setState(() {
-        _resume = result.files.single.path as File?;
+        _resume = File(result.files.single.path!);
       });
     }
   }
 
-  Future<void> pickProfilePicture() async {
-    FilePickerResult? result = await FilePicker.platform.pickFiles(
-      type: FileType.image,
-    );
-    if (result != null) {
+  void enableSaveButton(String value) {
+    if (detailsChanged == false) {
       setState(() {
-        _profilePicture = File(result.files.single.path!);
+        detailsChanged = true;
       });
     }
+  }
+
+  void saveImage() async {
+    if (_profilePicture != null) {
+      String photoUrl = await auth.savePhoto(_profilePicture!, currentUserId);
+
+      photo = photoUrl;
+    }
+  }
+
+  void saveResume() async {
+    if (_resume != null) {
+      String resumeUrl = await auth.saveResume(_resume!, currentUserId);
+
+      resume = resumeUrl;
+    }
+  }
+
+  @override
+  void initState() {
+    nameController.text = 'Nihal';
+    super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
-    return Form(
-      key: _formKey,
-      child: ListView(
-        padding: EdgeInsets.symmetric(horizontal: size.width * 0.15),
-        children: [
-          CustomTextField(
-            labelText: 'NAME',
-            onChanged: (value) {
-              _name = value;
-            },
-          ),
-          CustomTextField(
-            labelText: 'CONTACT',
-            onChanged: (value) {
-              _contact = value;
-            },
-          ),
-          Padding(
-            padding: EdgeInsets.only(
-              left: size.width * 0.01,
-              top: size.height * 0.02,
-            ),
-            child: const Text('RESUME'),
-          ),
-          Padding(
-            padding: EdgeInsets.only(right: size.width * 0.4),
-            child: ElevatedButton(
-              onPressed: pickResume,
-              child: const Text('Pick Resume'),
-            ),
-          ),
-          Padding(
-            padding: EdgeInsets.only(
-              left: size.width * 0.01,
-              top: size.height * 0.02,
-            ),
-            child: const Text('PROFILE PICTURE'),
-          ),
-          Padding(
-            padding: EdgeInsets.only(right: size.width * 0.4),
-            child: ElevatedButton(
-              onPressed: pickProfilePicture,
-              child: const Text('Pick Profile Picture'),
-            ),
-          ),
-          ProfileDropdownFormField(
-            value: _gender,
-            labelText: 'GENDER',
-            items: genders,
-            onChanged: (value) {
-              setState(() {
-                _gender = value!;
-              });
-            },
-            validator: (value) {
-              if (value == null || value.isEmpty) {
-                return 'T-shirt Size is required';
-              }
-              return null;
-            },
-          ),
-          ProfileDropdownFormField(
-            value: _tshirtSize,
-            labelText: 'T-SHIRT SIZE',
-            items: tshirtSizes,
-            onChanged: (value) {
-              setState(() {
-                _tshirtSize = value!;
-              });
-            },
-            validator: (value) {
-              if (value == null || value.isEmpty) {
-                return 'T-shirt Size is required';
-              }
-              return null;
-            },
-          ),
-          CustomTextField(
-            labelText: 'BIO',
-            maxLines: 3,
-            onChanged: (value) {
-              _bio = value;
-            },
-          ),
-          ProfileDropdownFormField(
-            value: _educationDegree,
-            labelText: 'EDUCATION DEGREE',
-            items: educationDegrees,
-            onChanged: (value) {
-              setState(() {
-                _educationDegree = value!;
-              });
-            },
-            validator: (value) {
-              if (value == null || value.isEmpty || value == 'Choose Degree') {
-                return 'Education Degree is required';
-              }
-              return null;
-            },
-          ),
-          CustomTextField(
-            labelText: 'COLLEGE NAME',
-            onChanged: (value) {
-              _collegeName = value;
-            },
-          ),
-          CustomTextField(
-            labelText: 'FIELD OF STUDY',
-            onChanged: (value) {
-              _fieldOfStudy = value;
-            },
-          ),
-          ProfileDropdownFormField(
-            value: _expectedGraduation,
-            labelText: 'Graduation Year',
-            items: generateYears(),
-            onChanged: (value) {
-              setState(() {
-                _expectedGraduation = value;
-              });
-            },
-            validator: (value) {
-              if (value == null || value.isEmpty || value == 'Choose Size') {
-                return 'Graduation Year is required';
-              }
-              return null;
-            },
-          ),
-          CustomTextField(
-            labelText: 'SKILLS',
-            maxLines: 3,
-            onChanged: (value) {
-              _skills = value;
-            },
-          ),
-          CustomTextField(
-            labelText: 'GITHUB LINK',
-            onChanged: (value) {
-              _githubLink = value;
-            },
-          ),
-          CustomTextField(
-            labelText: 'LINKEDIN LINK',
-            onChanged: (value) {
-              _linkedinLink = value;
-            },
-          ),
-          const SizedBox(height: 40.0),
-          Padding(
-            padding: EdgeInsets.symmetric(horizontal: size.width * 0.25),
-            child: ElevatedButton(
-              onPressed: () {
-                if (_formKey.currentState!.validate()) {
-                  _formKey.currentState!.save();
-                  ScaffoldMessenger.of(context).showMaterialBanner(
-                    MaterialBanner(
-                      content: const Text('Profile saved'),
-                      actions: [
-                        TextButton(
-                          onPressed: () {
-                            ScaffoldMessenger.of(context)
-                                .hideCurrentMaterialBanner();
-                          },
-                          child: const Text('Close'),
-                        ),
-                      ],
+    print('rebuilt');
+    return SingleChildScrollView(
+      child: Form(
+        key: _formKey,
+        child: size.width <= 720
+            ? Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                //padding: EdgeInsets.symmetric(horizontal: size.width * 0.15),
+                children: [
+                  ProfileTextField(
+                    labelText: 'NAME',
+                    controller: nameController,
+                    onChanged: enableSaveButton,
+                  ),
+                  ProfileTextField(
+                    labelText: 'CONTACT',
+                    controller: contactController,
+                    onChanged: enableSaveButton,
+                  ),
+                  Padding(
+                    padding: EdgeInsets.only(
+                      left: size.width * 0.01,
+                      top: size.height * 0.02,
                     ),
-                  );
-                  if (kDebugMode) {
-                    print('Profile saved');
-                  }
-                }
-              },
-              child: const Text('Save Profile'),
-            ),
-          ),
-          const SizedBox(height: 40.0),
-        ],
+                    child: const Text('RESUME'),
+                  ),
+                  Padding(
+                    padding: EdgeInsets.only(right: size.width * 0.4),
+                    child: ElevatedButton(
+                      onPressed: pickResume,
+                      child: const Text('Pick Resume'),
+                    ),
+                  ),
+                  Padding(
+                    padding: EdgeInsets.only(
+                      left: size.width * 0.01,
+                      top: size.height * 0.02,
+                    ),
+                    child: const Text('PROFILE PICTURE'),
+                  ),
+                  Padding(
+                    padding: EdgeInsets.only(right: size.width * 0.4),
+                    child: ElevatedButton(
+                      onPressed: pickProfilePicture,
+                      child: const Text('Pick Profile Picture'),
+                    ),
+                  ),
+                  ProfileDropdownFormField(
+                    value: selectedGender,
+                    labelText: 'GENDER',
+                    items: genders,
+                    onChanged: (value) {
+                      setState(() {
+                        selectedGender = value!;
+                      });
+                    },
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'T-shirt Size is required';
+                      }
+                      return null;
+                    },
+                  ),
+                  ProfileDropdownFormField(
+                    value: selectedSize,
+                    labelText: 'T-SHIRT SIZE',
+                    items: tshirtSizes,
+                    onChanged: (value) {
+                      setState(() {
+                        selectedSize = value!;
+                      });
+                    },
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'T-shirt Size is required';
+                      }
+                      return null;
+                    },
+                  ),
+                  ProfileTextField(
+                    labelText: 'BIO',
+                    maxLines: 3,
+                    controller: bioController,
+                    onChanged: enableSaveButton,
+                  ),
+                  ProfileDropdownFormField(
+                    value: degree,
+                    labelText: 'EDUCATION DEGREE',
+                    items: educationDegrees,
+                    onChanged: (value) {
+                      setState(() {
+                        degree = value!;
+                      });
+                    },
+                    validator: (value) {
+                      if (value == null ||
+                          value.isEmpty ||
+                          value == 'Choose Degree') {
+                        return 'Education Degree is required';
+                      }
+                      return null;
+                    },
+                  ),
+                  ProfileTextField(
+                    labelText: 'COLLEGE NAME',
+                    controller: collegeController,
+                    onChanged: enableSaveButton,
+                  ),
+                  ProfileTextField(
+                    labelText: 'FIELD OF STUDY',
+                    controller: fieldController,
+                    onChanged: enableSaveButton,
+                  ),
+                  ProfileDropdownFormField(
+                    value: year.toString(),
+                    labelText: 'Graduation Year',
+                    items: generateYears(),
+                    onChanged: (value) {
+                      setState(() {
+                        year = int.parse(value!);
+                      });
+                    },
+                    validator: (value) {
+                      if (value == null ||
+                          value.isEmpty ||
+                          value == 'Choose Size') {
+                        return 'Graduation Year is required';
+                      }
+                      return null;
+                    },
+                  ),
+                  ProfileTextField(
+                    labelText: 'SKILLS',
+                    maxLines: 3,
+                    controller: skillsController,
+                    onChanged: enableSaveButton,
+                  ),
+                  ProfileTextField(
+                    labelText: 'GITHUB LINK',
+                    controller: githubController,
+                    onChanged: enableSaveButton,
+                  ),
+                  ProfileTextField(
+                    labelText: 'LINKEDIN LINK',
+                    controller: linkedinController,
+                    onChanged: enableSaveButton,
+                  ),
+                  const SizedBox(height: 40.0),
+                  Padding(
+                    padding:
+                        EdgeInsets.symmetric(horizontal: size.width * 0.25),
+                    child: MaterialButton(
+                      padding: const EdgeInsets.all(20),
+                      color:
+                          detailsChanged ? Colors.blue.shade100 : Colors.grey,
+                      hoverColor: detailsChanged ? Colors.blue : Colors.grey,
+                      onPressed: detailsChanged
+                          ? () {
+                              if (_formKey.currentState!.validate()) {
+                                _formKey.currentState!.save();
+                                ScaffoldMessenger.of(context)
+                                    .showMaterialBanner(
+                                  MaterialBanner(
+                                    content: const Text('Profile saved'),
+                                    actions: [
+                                      TextButton(
+                                        onPressed: () {
+                                          ScaffoldMessenger.of(context)
+                                              .hideCurrentMaterialBanner();
+                                        },
+                                        child: const Text('Close'),
+                                      ),
+                                    ],
+                                  ),
+                                );
+                                if (kDebugMode) {
+                                  print('Profile saved');
+                                }
+                              }
+                            }
+                          : () {
+                              if (photo != null && resume != null) {
+                                auth.saveData(
+                                  name: nameController.text,
+                                  username: nameController.text,
+                                  email: contactController.text,
+                                  gender: selectedGender,
+                                  bio: bioController.text,
+                                  tShirtSize: selectedSize,
+                                  degree: degree,
+                                  college: collegeController.text,
+                                  field: fieldController.text,
+                                  passingYear: year.toString(),
+                                  skills:
+                                      skillsController.text.split(',').toList(),
+                                  linkedin: linkedinController.text,
+                                  github: githubController.text,
+                                  photo: photo!,
+                                  resume: resume!,
+                                );
+                              } else {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(
+                                    content:
+                                        Text('Photo and resume not uploaded'),
+                                    duration: Duration(seconds: 2),
+                                    behavior: SnackBarBehavior.floating,
+                                  ),
+                                );
+                              }
+                            },
+                      child: detailsChanged
+                          ? const Text('Save Profile')
+                          : const Text('No Changes'),
+                    ),
+                  ),
+                  const SizedBox(height: 40.0),
+                ],
+              )
+            : Row(
+                children: [],
+              ),
       ),
+    );
+  }
+}
+
+class ProfileDropdownFormField extends StatelessWidget {
+  final String? value;
+  final String? labelText;
+  final List<String> items;
+  final ValueChanged<String?>? onChanged;
+  final FormFieldValidator<String>? validator;
+
+  const ProfileDropdownFormField({
+    super.key,
+    required this.value,
+    required this.labelText,
+    required this.items,
+    required this.onChanged,
+    required this.validator,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final size = MediaQuery.of(context).size;
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const SizedBox(height: 20.0),
+        Padding(
+          padding: EdgeInsets.only(left: size.width * 0.01),
+          child: Text(labelText!),
+        ),
+        DropdownButtonFormField<String>(
+          decoration: InputDecoration(
+            contentPadding: const EdgeInsets.all(20),
+            errorStyle: const TextStyle(color: Colors.redAccent),
+            errorBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(20),
+              borderSide: const BorderSide(color: Colors.redAccent),
+            ),
+            enabledBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(20),
+              borderSide: const BorderSide(color: Colors.grey),
+            ),
+            focusedBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(20),
+              borderSide: const BorderSide(color: Colors.blue),
+            ),
+            border: const OutlineInputBorder(),
+          ),
+          value: value,
+          items: items
+              .map(
+                (item) => DropdownMenuItem<String>(
+                  value: item,
+                  child: Text(item),
+                ),
+              )
+              .toList(),
+          onChanged: onChanged,
+          validator: (value) {
+            if (value == null || value.isEmpty || value == 'Select') {
+              return 'Required';
+            }
+            return null;
+          },
+          autovalidateMode: AutovalidateMode.onUserInteraction,
+        ),
+      ],
+    );
+  }
+}
+
+class ProfileTextField extends StatelessWidget {
+  final String labelText;
+  final int maxLines;
+  final TextEditingController controller;
+  final Function(String) onChanged;
+
+  const ProfileTextField(
+      {super.key,
+      required this.labelText,
+      this.maxLines = 1,
+      required this.controller,
+      required this.onChanged});
+
+  @override
+  Widget build(BuildContext context) {
+    final size = MediaQuery.of(context).size;
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const SizedBox(height: 20.0),
+        Padding(
+          padding: EdgeInsets.only(left: size.width * 0.01),
+          child: Text(labelText),
+        ),
+        TextFormField(
+            controller: controller,
+            decoration: InputDecoration(
+              contentPadding: const EdgeInsets.all(20),
+              errorStyle: const TextStyle(color: Colors.redAccent),
+              errorBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(20),
+                borderSide: const BorderSide(color: Colors.redAccent),
+              ),
+              enabledBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(20),
+                borderSide: const BorderSide(color: Colors.grey),
+              ),
+              focusedBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(20),
+                borderSide: const BorderSide(color: Colors.blue),
+              ),
+              border: const OutlineInputBorder(),
+            ),
+            maxLines: maxLines,
+            validator: (value) {
+              if (value == null || value.isEmpty) {
+                return '$labelText is required';
+              }
+              return null;
+            },
+            onChanged: onChanged),
+      ],
     );
   }
 }

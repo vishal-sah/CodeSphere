@@ -128,25 +128,25 @@ class _SignUpPageState extends State<SignUpPage> {
         );
 
         // Check if user creation was successful
-        if (userCredential.user != null) {
-          // Store user details in Firestore
-          String uid = userCredential.user!.uid;
-          currentUserId = uid;
-          DocumentReference userDetailsRef = FirebaseFirestore.instance
-              .collection('users')
-              .doc(uid)
-              .collection('user_details')
-              .doc();
+        // if (userCredential.user != null) {
+        //   // Store user details in Firestore
+        //   String uid = userCredential.user!.uid;
+        //   currentUserId = uid;
+        //   DocumentReference userDetailsRef = FirebaseFirestore.instance
+        //       .collection('users')
+        //       .doc(uid)
+        //       .collection('user_details')
+        //       .doc();
 
-          // Set user details in Firestore
-          await userDetailsRef.set(
-            {
-              'name': _name.text,
-              'dateOfBirth': _dateOfBirthController.text,
-              'email': _email.text,
-            },
-          );
-        }
+        //   // Set user details in Firestore
+        //   await userDetailsRef.set(
+        //     {
+        //       'name': _name.text,
+        //       'dateOfBirth': _dateOfBirthController.text,
+        //       'email': _email.text,
+        //     },
+        //   );
+        // }
       }
     } catch (err) {
       // Handle sign-up errors

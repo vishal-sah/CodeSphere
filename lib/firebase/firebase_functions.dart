@@ -126,7 +126,7 @@ class AuthServices {
 
   // after user successful signup, save his data in firestore
   Future<void> saveData(
-      {//required UserCredential userCredential,
+      { //required UserCredential userCredential,
       required String name,
       required String username,
       required String email,
@@ -144,8 +144,8 @@ class AuthServices {
       required String resume}) async {
     try {
       //add user to the list of users
-      firestore.collection('users').doc(currentUserId).set({
-        'uid': currentUserId,
+      firestore.collection('users').doc(getCurentUser()!.uid).set({
+        'uid': getCurentUser()!.uid,
         'email': email,
         'name': name,
         'username': username,
@@ -162,7 +162,7 @@ class AuthServices {
         'photo': photo,
         'resume': resume,
       });
-      return ;
+      return;
     } on FirebaseAuthException catch (e) {
       throw Exception(e.code);
     }

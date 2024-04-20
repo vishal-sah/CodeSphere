@@ -79,36 +79,20 @@ class HackathonCard extends StatelessWidget {
                           onTap: () {
                             _launchUrl(hackathon.instagramLink); // Launch Instagram URL
                           },
-                          child: Container(
-                            decoration: const BoxDecoration(
-                              shape: BoxShape.circle,
-                              color: Colors.blue,
-                            ),
-                            padding: const EdgeInsets.all(12),
-                            child: const Icon(
-                              Icons.link,
-                              color: Colors.white,
-                              size: 20,
-                            ),
-                          ),
+                          child: SocialIcon(
+                            name: 'instagram',
+                            link: hackathon.instagramLink,
+                          )
                         ),
                         Container(width: 10),
                         GestureDetector(
                           onTap: () {
                             _launchUrl(hackathon.linkedinLink); // Launch LinkedIn URL
                           },
-                          child: Container(
-                            decoration: const BoxDecoration(
-                              shape: BoxShape.circle,
-                              color: Colors.blue,
-                            ),
-                            padding: const EdgeInsets.all(12),
-                            child: const Icon(
-                              Icons.link,
-                              color: Colors.white,
-                              size: 20,
-                            ),
-                          ),
+                          child: SocialIcon(
+                            name: 'linkedin',
+                            link: hackathon.linkedinLink,
+                          )
                         ),
                         Container(width: 10),
                         GestureDetector(
@@ -150,5 +134,26 @@ class HackathonCard extends StatelessWidget {
     } else {
       throw 'Could not launch $url';
     }
+  }
+}
+
+class SocialIcon extends StatelessWidget {
+  final String name;
+  final String link;
+  const SocialIcon({
+    super.key,
+    required this.name,
+    required this.link
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return InkWell(
+      onTap: () async {
+        // ignore: deprecated_member_use
+        await launch(link);
+      },
+      child: Image.asset('assets/images/$name.png'),
+    );
   }
 }

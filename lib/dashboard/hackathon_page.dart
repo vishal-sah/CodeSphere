@@ -1,3 +1,4 @@
+import 'package:codesphere/screens/explore_hackathon.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
@@ -9,16 +10,26 @@ class HackathonPage extends StatelessWidget {
     return SingleChildScrollView(
       child: Column(
         children: [
-          GestureDetector(
-            onTap: (){},
-            child: Container(
-              color: Colors.blue,
-              height: 120,
-              width: 120,
-              child: const Center(
-                child: Text('Explore Hackathons'),
-              ),
-            ),
+          // GestureDetector(
+          //   onTap: (){},
+          //   child: Container(
+          //     color: Colors.blue,
+          //     height: 120,
+          //     width: 120,
+          //     child: const Center(
+          //       child: Text('Explore Hackathons'),
+          //     ),
+          //   ),
+          // ),
+          ElevatedButton(
+              onPressed: () {
+                Navigator.push(context, 
+                  MaterialPageRoute(
+                    builder: (context) => ExploreHackathonPage()
+                  ),
+                );
+              },
+              child: const Text('Explore Hackathon'),
           ),
           const SizedBox(height: 30,),
           const Text('Your Hackathons'),

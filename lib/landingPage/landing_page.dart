@@ -1,9 +1,11 @@
+import 'package:codesphere/dashboard/dashboard.dart';
+import 'package:codesphere/landingPage/about_page.dart';
 import 'package:codesphere/landingPage/faqPage.dart';
 import 'package:flutter/material.dart';
 
 class LandingPage extends StatefulWidget {
   final int initialPage;
-  LandingPage({super.key, required this.initialPage});
+  const LandingPage({super.key, required this.initialPage});
 
   @override
   State<LandingPage> createState() => _LandingPageState();
@@ -12,7 +14,11 @@ class LandingPage extends StatefulWidget {
 class _LandingPageState extends State<LandingPage> {
   int _selectedPage = 0;
   int _hoveredTab = 0;
-  List<Widget> pages = [Text('1'), const Text('2'), const FAQsPage(), ];
+  List<Widget> pages = [
+    const AboutPage(),
+    const Text('2'),
+    const FAQsPage(),
+  ];
 
   void _selectPage(int pageIndex) {
     setState(() {
@@ -28,8 +34,8 @@ class _LandingPageState extends State<LandingPage> {
 
   @override
   Widget build(BuildContext context) {
-    bool _isSmallScreen = MediaQuery.of(context).size.width <= 600;
-    bool _isDarkTheme = false;
+    bool isSmallScreen = MediaQuery.of(context).size.width <= 600;
+    bool isDarkTheme = false;
 
     return Scaffold(
       appBar: AppBar(
@@ -39,12 +45,23 @@ class _LandingPageState extends State<LandingPage> {
           children: [
             Row(
               children: [
-                Image.asset('assets/images/abc.png', height: 30,),
-                SizedBox(width: 10,),
-                const Text('CodeSphere', style: TextStyle(fontWeight: FontWeight.bold, color: Colors.black, fontSize: 30),),
+                Image.asset(
+                  'assets/images/abc.png',
+                  height: 30,
+                ),
+                const SizedBox(
+                  width: 10,
+                ),
+                const Text(
+                  'CodeSphere',
+                  style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      color: Colors.black,
+                      fontSize: 30),
+                ),
               ],
             ),
-            if(!_isSmallScreen)
+            if (!isSmallScreen)
               Container(
                 color: Colors.white,
                 child: Row(
@@ -59,9 +76,9 @@ class _LandingPageState extends State<LandingPage> {
               ),
             Row(
               children: [
-                if(_isSmallScreen)
+                if (isSmallScreen)
                   PopupMenuButton<int>(
-                    itemBuilder: (context){
+                    itemBuilder: (context) {
                       return [
                         const PopupMenuItem(
                           value: 0,
@@ -82,21 +99,29 @@ class _LandingPageState extends State<LandingPage> {
                       ];
                     },
                     position: PopupMenuPosition.under,
-                    onSelected: (value){
-
+                    onSelected: (value) {
+                      if (value == 3) {
+                        Navigator.pushReplacement(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => const DashBoard(),
+                          ),
+                        );
+                      } else {
                         _selectPage(value);
-
+                      }
                     },
                   ),
                 IconButton(
-                    icon: _isDarkTheme ? const Icon(Icons.dark_mode) :
-                    const Icon(Icons.light_mode),
-                    onPressed: (){
+                    // ignore: dead_code
+                    icon: isDarkTheme
+                        ? const Icon(Icons.dark_mode)
+                        : const Icon(Icons.light_mode),
+                    onPressed: () {
                       setState(() {
-                        _isDarkTheme = !_isDarkTheme;
+                        isDarkTheme = !isDarkTheme;
                       });
-                    }
-                ),
+                    }),
               ],
             ),
           ],
@@ -116,7 +141,9 @@ class _LandingPageState extends State<LandingPage> {
         onTap: () => _selectPage(index),
         child: Container(
           padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-          color: _selectedPage == index ? Colors.blue.shade700 : (isHovered ? Colors.blue.shade100 : Colors.transparent),
+          color: _selectedPage == index
+              ? Colors.blue.shade700
+              : (isHovered ? Colors.blue.shade100 : Colors.transparent),
           child: Column(
             children: [
               Text(

@@ -1,4 +1,4 @@
-import 'package:codesphere/landingPage/landingPage.dart';
+import 'package:codesphere/landingPage/landing_page.dart';
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -7,7 +7,7 @@ class Footer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    bool _isLargeScreen = MediaQuery.of(context).size.width > 750;
+    bool isLargeScreen = MediaQuery.of(context).size.width > 750;
     return Container(
       width: MediaQuery.of(context).size.width,
       color: Colors.yellow.shade100,
@@ -17,8 +17,8 @@ class Footer extends StatelessWidget {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              SizedBox(height: 30,),
-              _isLargeScreen ?
+              const SizedBox(height: 30,),
+              isLargeScreen ?
               Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -58,7 +58,7 @@ class Footer extends StatelessWidget {
                 color: Colors.black,
               ),
               const SizedBox(height: 25,),
-              _isLargeScreen ?
+              isLargeScreen ?
               const Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -85,7 +85,7 @@ class Footer extends StatelessWidget {
     );
   }
   Widget _buildColumnTitle(String title) {
-    return Text(title, style: TextStyle(fontWeight: FontWeight.bold));
+    return Text(title, style: const TextStyle(fontWeight: FontWeight.bold));
   }
 
   Widget _buildTextButton(String text, VoidCallback onPressed) {
@@ -102,7 +102,7 @@ class Footer extends StatelessWidget {
       children: [
         Column(
           children: [
-            SizedBox(height: 30,),
+            const SizedBox(height: 30,),
             _buildColumnTitle('COMMUNITY'),
             _buildTextButton('About us', () {}),
             _buildTextButton('Organize Hackathon', () {}),
@@ -112,24 +112,24 @@ class Footer extends StatelessWidget {
         ),
         Column(
           children: [
-            SizedBox(height: 30,),
+            const SizedBox(height: 30,),
             _buildColumnTitle('SUPPORT'),
             _buildTextButton(
               'FAQs',
               () {
-                Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => LandingPage(initialPage: 2)));
+                Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const LandingPage(initialPage: 2)));
               }
             ),
             _buildTextButton(
               'Help & Support',
               () async {
                 const email = 'codespere01@email.com'; // Replace this with your email address
-                final Uri _emailLaunchUri = Uri(
+                final Uri emailLaunchUri = Uri(
                   scheme: 'mailto',
                   path: email,
                 );
                 try {
-                  await launchUrl(_emailLaunchUri);
+                  await launchUrl(emailLaunchUri);
                 }
                 catch (e){
                   throw 'Could not launch email';
@@ -140,12 +140,12 @@ class Footer extends StatelessWidget {
               'Contact us',
                   () async {
                 const email = 'codespere01@email.com'; // Replace this with your email address
-                final Uri _emailLaunchUri = Uri(
+                final Uri emailLaunchUri0 = Uri(
                   scheme: 'mailto',
                   path: email,
                 );
                 try {
-                  await launchUrl(_emailLaunchUri);
+                  await launchUrl(emailLaunchUri0);
                 }
                 catch (e){
                   throw 'Could not launch email';
@@ -166,39 +166,39 @@ class SocialMediaIcons extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Row(
+    return const Row(
       mainAxisSize: MainAxisSize.min,
       children: [
         SocialIcon(
           name: 'linkedin',
           link: 'https://www.linkedin.com/in/nihal-yadav-7400a9262/',
         ),
-        const SizedBox(width: 7,),
+        SizedBox(width: 7,),
         SocialIcon(
           name: 'github',
           link: 'https://github.com/',
         ),
-        const SizedBox(width: 7,),
+        SizedBox(width: 7,),
         SocialIcon(
           name: 'facebook',
           link: 'https://www.facebook.com/',
         ),
-        const SizedBox(width: 7,),
+        SizedBox(width: 7,),
         SocialIcon(
           name: 'instagram',
           link: 'https://www.instagram.com/nihal.yadav.000/',
         ),
-        const SizedBox(width: 7,),
+        SizedBox(width: 7,),
         SocialIcon(
           name: 'twitter',
           link: 'https://www.facebook.com/',
         ),
-        const SizedBox(width: 7,),
+        SizedBox(width: 7,),
         SocialIcon(
           name: 'youtube',
           link: 'https://www.youtube.com/channel/UCg0J0hP0vs67cZS4AvTjcZg',
         ),
-        const SizedBox(width: 7,),
+        SizedBox(width: 7,),
         SocialIcon(
           name: 'telegram',
           link: 'https://t.me/+_oLt2QoszWMyZDg9',
@@ -211,7 +211,7 @@ class SocialMediaIcons extends StatelessWidget {
 class SocialIcon extends StatelessWidget {
   final String name;
   final String link;
-  SocialIcon({
+  const SocialIcon({
     super.key,
     required this.name,
     required this.link
@@ -221,9 +221,10 @@ class SocialIcon extends StatelessWidget {
   Widget build(BuildContext context) {
     return InkWell(
       onTap: () async {
+        // ignore: deprecated_member_use
         await launch(link);
       },
-      child: Image.asset('assets/images/${name}.png'),
+      child: Image.asset('assets/images/$name.png'),
     );
   }
 }

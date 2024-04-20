@@ -1,4 +1,3 @@
-import 'package:codesphere/auth/dashboard_page.dart';
 import 'package:codesphere/auth/signup_page.dart';
 import 'package:codesphere/dashboard/dashboard.dart';
 import 'package:flutter/material.dart';
@@ -75,7 +74,7 @@ class EmailPasswordLoginPageState extends State<EmailPasswordLoginPage> {
             ),
           );
 
-          await Future.delayed(Duration(seconds: 2));
+          await Future.delayed(const Duration(seconds: 2));
 
           Navigator.pushReplacement(
             context,
@@ -137,13 +136,13 @@ class EmailPasswordLoginPageState extends State<EmailPasswordLoginPage> {
                   'Welcome back! Sign in with your email and password.',
                   style: TextStyle(fontSize: 15),
                 ),
-                SizedBox(height: 25),
+                const SizedBox(height: 25),
                 Container(
                   decoration: BoxDecoration(
                     border: Border.all(color: Colors.grey),
                     borderRadius: BorderRadius.circular(5.0),
                   ),
-                  padding: EdgeInsets.symmetric(horizontal: 10.0),
+                  padding: const EdgeInsets.symmetric(horizontal: 10.0),
                   child: TextFormField(
                     enableSuggestions: true,
                     autovalidateMode: AutovalidateMode.onUserInteraction,
@@ -162,7 +161,7 @@ class EmailPasswordLoginPageState extends State<EmailPasswordLoginPage> {
                     ),
                   ),
                 ),
-                SizedBox(height: 16),
+                const SizedBox(height: 16),
                 Container(
                   decoration: BoxDecoration(
                     border: Border.all(color: Colors.grey),
@@ -175,7 +174,7 @@ class EmailPasswordLoginPageState extends State<EmailPasswordLoginPage> {
                     decoration: InputDecoration(
                       border: InputBorder.none,
                       labelText: 'Password',
-                      icon: Icon(Icons.lock),
+                      icon: const Icon(Icons.lock),
                       suffixIcon: IconButton(
                         icon: Icon(
                           _isPasswordVisible
@@ -208,13 +207,13 @@ class EmailPasswordLoginPageState extends State<EmailPasswordLoginPage> {
                         foregroundColor: Colors.white,
                       ),
                     ),
-                    SizedBox(width: 10),
+                    const SizedBox(width: 10),
                     ElevatedButton(
                       onPressed: () {
                         Navigator.pushReplacement(
                             context,
                             MaterialPageRoute(
-                                builder: (context) => FirstPage()));
+                                builder: (context) => const FirstPage()));
                       },
                       child: const Text('Cancel'),
                       style: ElevatedButton.styleFrom(
@@ -224,7 +223,7 @@ class EmailPasswordLoginPageState extends State<EmailPasswordLoginPage> {
                     ),
                     SizedBox(width: MediaQuery.of(context).size.width * 0.1),
                     GestureDetector(
-                        child: Text('Forgot Password?',
+                        child: const Text('Forgot Password?',
                             style: TextStyle(
                               color: Colors.blue,
                               decoration: TextDecoration.underline,
@@ -238,10 +237,10 @@ class EmailPasswordLoginPageState extends State<EmailPasswordLoginPage> {
                 MaterialButton(
                   onPressed: () {
                     Navigator.pushReplacement(context,
-                        MaterialPageRoute(builder: (context) => SignUpPage()));
+                        MaterialPageRoute(builder: (context) => const SignUpPage()));
                   },
                   color: Colors.blue,
-                  child: Text('Create Account'),
+                  child: const Text('Create Account'),
                 ),
                 if (_isLoading) // if loading show circular progress indicator
                   const CircularProgressIndicator(),

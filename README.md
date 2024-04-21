@@ -30,7 +30,7 @@ Welcome to the Admin Dashboard of the Hackathon Hub, your control center for man
 Empower our users to thrive in the hackathon ecosystem by leveraging data insights, community feedback, and industry trends to continuously enhance the platform and deliver value to all stakeholders. Together, we'll shape the future of innovation, one hackathon at a time.
   
 ## Demo Video Link:
-  <a href="https://youtu.be/dQw4w9WgXcQ">https://youtu.be/dQw4w9WgXcQ</a>
+  <a href="https://youtu.be/Wzc4gyODmpE">Demo Video</a>
   
 ## Presentation Link:
   <a href="https://tinyurl.com/wwhack36"> PPT link here </a>

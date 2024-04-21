@@ -32,8 +32,8 @@ class _CreateHackathonPageState extends State<CreateHackathonPage> {
   DateTime? _endDate;
   DateTime? _midEvaluationDate;
   DateTime? _resultDate;
-  List<List<String>> _partners = [];
-  List<List<String>> _faqs = [];
+  String? _partners;
+  String? _faqs;
   final AuthServices auth = AuthServices();
 
   Future<void> _selectDate(
@@ -151,9 +151,7 @@ class _CreateHackathonPageState extends State<CreateHackathonPage> {
                           'PARTNERS & LINKS(Comma separated) e.g. Part1:Link1,Part2:Link2',
                       maxLines: 3,
                       onChanged: (value) {
-                        final partner = value.split(',');
-                        _partners =
-                            partner.map((faq) => faq.split(':')).toList();
+                        _partners = value;
                       },
                     ),
                     CustomTextField(
@@ -165,8 +163,7 @@ class _CreateHackathonPageState extends State<CreateHackathonPage> {
                       labelText: 'FAQs (Comma separated) e.g. Q1:A1,Q2:A2',
                       maxLines: 3,
                       onChanged: (value) {
-                        final faqs = value.split(',');
-                        _faqs = faqs.map((faq) => faq.split(':')).toList();
+                        _faqs = value;
                       },
                     ),
                     const SizedBox(height: 20.0),
@@ -178,7 +175,9 @@ class _CreateHackathonPageState extends State<CreateHackathonPage> {
                         onPressed: () async {
                           if (_formKey.currentState!.validate()) {
                             // Save data to database
-                            await auth.addHackathon(
+                            print('start');
+                            await auth
+                                .addHackathon(
                               name: _name!,
                               organiserUserId: auth.getCurentUser()!.uid,
                               collegeName: _collegeName!,
@@ -199,14 +198,22 @@ class _CreateHackathonPageState extends State<CreateHackathonPage> {
                               hackathonEndDate: _endDate!,
                               midEvaluationDate: _midEvaluationDate!,
                               resultDate: _resultDate!,
-                              partners: _partners,
-                              faqs: _faqs,
+                              partners: _partners!,
+                              faqs: _faqs!,
                               coverImageUrl: '',
-                            );
-                            Navigator.pushReplacement(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => DashBoard()));
+                            )
+                                .then((value) {
+                              print('end');
+                              Navigator.pushReplacement(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => DashBoard()));
+                              print('end2');
+                            });
+                            // Navigator.pushReplacement(
+                            //     context,
+                            //     MaterialPageRoute(
+                            //         builder: (context) => DashBoard()));
                           }
                         },
                         child: const Text(

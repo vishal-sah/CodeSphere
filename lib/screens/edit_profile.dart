@@ -480,9 +480,7 @@ class _ProfileFormState extends State<ProfileForm> {
                                             photo: photo!,
                                             resume: resume!,
                                           );
-                                          setState(() {
-                                            
-                                          });
+                                          setState(() {});
                                         } else {
                                           ScaffoldMessenger.of(context)
                                               .showSnackBar(

@@ -9,7 +9,7 @@
 
 **User Perspective:**
 
-Welcome to the Hackathon Hub, where innovation meets opportunity! Our platform is designed to empower users like you to discover, engage, and thrive in the exciting world of hackathons.
+Welcome to the CodeSphere, where innovation meets opportunity! Our platform is designed to empower users like you to discover, engage, and thrive in the exciting world of hackathons.
 
 1. **User Profile:** Your profile is your digital identity on the platform, showcasing your skills, achievements, and participation history. Customize your profile to stand out to potential teammates and recruiters, and track your progress as you embark on your hackathon journey.
 
@@ -46,7 +46,7 @@ Empower our users to thrive in the hackathon ecosystem by leveraging data insigh
   
 ## Contributors:
 
-Team Name: Code_Pirates
+Team Name: Widget Warriors
 
 * [Nihal Yadav](https://github.com/nihal2908)
 * [Vishal Kumar Sah](https://github.com/vishal-sah)

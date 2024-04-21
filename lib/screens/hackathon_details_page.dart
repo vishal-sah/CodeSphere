@@ -1,3 +1,4 @@
+import 'package:codesphere/screens/code_of_conduct.dart';
 import 'package:flutter/material.dart';
 import 'package:codesphere/landingPage/faqPage.dart';
 import 'package:codesphere/landingPage/footer.dart';
@@ -21,20 +22,23 @@ class HackathonDetailPage extends StatelessWidget {
             Row(
               mainAxisSize: MainAxisSize.min,
               children: [
-                const Icon(
-                  Icons.person,
-                  size: 20,
-                ),
-                Text(hack['name']),
+                Text(hack['name'],
+                    style: const TextStyle(
+                        fontSize: 24, fontWeight: FontWeight.bold)),
               ],
             ),
             ResponsiveWidget(
               children: [
-                // Cover image
-                Container(
-                  width: MediaQuery.of(context).size.width * 0.4,
-                  height: 150,
-                  color: Colors.blue,
+                // Apply button
+                Padding(
+                  padding: EdgeInsets.symmetric(
+                      vertical: MediaQuery.of(context).size.height * 0.01,
+                      horizontal: MediaQuery.of(context).size.width * 0.20),
+                  child: MaterialButton(
+                    color: const Color.fromARGB(255, 115, 175, 224),
+                    onPressed: () {},
+                    child: const Text('Apply Now'),
+                  ),
                 ),
                 // Schedule container
                 Container(
@@ -60,28 +64,46 @@ class HackathonDetailPage extends StatelessWidget {
                     borderRadius: BorderRadius.circular(10),
                     color: Colors.grey,
                   ),
-                  padding: const EdgeInsets.all(10),
-                  child: Text(hack['about']),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 20,
+                    vertical: 10,
+                  ),
+                  child: Text(
+                    hack['about'],
+                    style: const TextStyle(
+                      fontSize: 18,
+                    ),
+                  ),
                 ),
                 // Prizes
                 Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  mainAxisSize: MainAxisSize.min,
                   children: [
-                    const Text('Prizes'),
+                    const Text('Prizes', style: TextStyle(fontSize: 24)),
                     Container(
                       width: MediaQuery.of(context).size.width * 0.4,
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(10),
                         color: Colors.grey,
                       ),
-                      padding: const EdgeInsets.all(10),
-                      child: Text(hack['prize']),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 20,
+                        vertical: 10,
+                      ),
+                      child: Text(
+                        hack['prize'],
+                        style: const TextStyle(
+                          fontSize: 18,
+                        ),
+                      ),
                     ),
                   ],
                 ),
                 // Themes
                 Column(
                   children: [
-                    const Text('Themes'),
+                    const Text('Themes', style: TextStyle(fontSize: 24)),
                     Container(
                       width: MediaQuery.of(context).size.width * 0.4,
                       decoration: BoxDecoration(
@@ -93,7 +115,7 @@ class HackathonDetailPage extends StatelessWidget {
                         children: hack['theme'].map<Widget>((theme) {
                           return Text(
                             theme,
-                            style: TextStyle(
+                            style: const TextStyle(
                               fontSize: 14,
                               color: Colors.black87,
                             ),
@@ -108,10 +130,15 @@ class HackathonDetailPage extends StatelessWidget {
             // Rules
             const Text('Rules'),
             Row(
+              mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                const Text('Please refer to FAQs'),
                 TextButton(
-                  onPressed: () {},
+                  onPressed: () {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => const CodeOfConductPage()));
+                  },
                   child: const Text('Code of Conduct'),
                 ),
               ],

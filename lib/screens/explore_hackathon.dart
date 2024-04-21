@@ -33,12 +33,14 @@ class ExploreHackathonPage extends StatelessWidget {
                       children: hackathonDocs.map((document) {
                         Map<String, dynamic> hackathonData =
                             document.data() as Map<String, dynamic>;
+                        String uid = document.id;
 
                         return Padding(
                           padding: const EdgeInsets.symmetric(
                               vertical: 10, horizontal: 16),
                           child: HackathonCard(
                             hack: hackathonData,
+                            uid: uid
                           ),
                         );
                       }).toList(),

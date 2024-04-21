@@ -249,7 +249,7 @@ class AuthServices {
         'faqs': faqs,
         'coverImageUrl': coverImageUrl,
         'email': email,
-            'createdAt': FieldValue.serverTimestamp(),
+        'createdAt': FieldValue.serverTimestamp(),
       });
       await firestore.collection('users').doc(organiserUserId).update({
         'organized': FieldValue.arrayUnion([ref.id])
@@ -263,6 +263,76 @@ class AuthServices {
   // get list of all the hacks
   Future<dynamic> getHackathons() async {
     return await firestore.collection('hackathons').get();
+  }
+
+  // get all the teams and their hackathons
+  // Retrieve user's teams data from Firestore
+  Future<List<Map<String, dynamic>>> getHackathonPageData(
+      {required String uid}) async {
+    List<Map<String, dynamic>> result = [];
+
+    try {
+      // Retrieve the user document to access the 'teams' field
+      DocumentSnapshot userSnapshot =
+          await firestore.collection('users').doc(uid).get();
+      final temp = userSnapshot.data() as Map<String, dynamic>;
+      List<dynamic> teamIds = temp['teams'] ?? [];
+
+      // Iterate through each team ID and fetch corresponding team details
+      for (String teamId in teamIds) {
+        // Retrieve the team document based on the team ID
+        DocumentSnapshot teamSnapshot =
+            await firestore.collection('teams').doc(teamId).get();
+        Map<String, dynamic> teamData =
+            teamSnapshot.data() as Map<String, dynamic>;
+
+        // Retrieve the hackathon details associated with the team
+        String hackathonDocId = teamData['hackathonDocId'];
+        DocumentSnapshot hackathonSnapshot =
+            await firestore.collection('hackathons').doc(hackathonDocId).get();
+        Map<String, dynamic> hackathonData =
+            hackathonSnapshot.data() as Map<String, dynamic>;
+
+        // Prepare the team information to be added to the result list
+        Map<String, dynamic> teamInfo = {
+          'score': teamData['score'],
+          'status': teamData['status'],
+          'name': hackathonData['name'],
+          'hackathonId': hackathonDocId,
+          'applicationStartDate': hackathonData['applicationStartDate'],
+          'applicationEndDate': hackathonData['applicationEndDate'],
+          'hackathonStartDate': hackathonData['hackathonStartDate'],
+          'hackathonEndDate': hackathonData['hackathonEndDate'],
+          'midEvaluationDate': hackathonData['midEvaluationDate'],
+          'resultDate': hackathonData['resultDate'],
+          'members': [], // Placeholder for team members (to be populated later)
+        };
+
+        // Retrieve member details for the team
+        List<dynamic> memberIds = teamData['memberIds'] ?? [];
+        List<List<String>> members = [];
+
+        for (String memberId in memberIds) {
+          DocumentSnapshot memberSnapshot =
+              await firestore.collection('users').doc(memberId).get();
+          Map<String, dynamic> memberData =
+              memberSnapshot.data() as Map<String, dynamic>;
+          String memberName = memberData['name'] ?? 'Unknown';
+          String memberImageUrl = memberData['imageUrl'] ??
+              ''; // Add logic to fetch member image URL
+          members.add([memberImageUrl, memberName]);
+        }
+
+        // Update the team information with member details
+        teamInfo['members'] = members;
+        result.add(teamInfo);
+      }
+
+      return result;
+    } catch (error) {
+      print('Error fetching hackathon page data: $error');
+      throw error;
+    }
   }
 
   // on organiser side get all the list of organised hackathons

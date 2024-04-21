@@ -1,3 +1,4 @@
+import 'package:codesphere/auth/forgot_password.dart';
 import 'package:codesphere/auth/login_page.dart';
 import 'package:codesphere/dashboard/hackathon_page.dart';
 import 'package:codesphere/firebase/firebase_functions.dart';
@@ -19,7 +20,7 @@ class _DashBoardState extends State<DashBoard> {
   bool _isDarkTheme = false;
   List<Widget> pages = [
     const ProfileForm(),
-    const HackathonPage(),
+    HackathonPage(),
     const Center(
       child: Text('3'),
     ),
@@ -60,15 +61,7 @@ class _DashBoardState extends State<DashBoard> {
           title: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Row(
-                children: [
-                  Image.asset(
-                    'assets/images/abc.png',
-                    height: 30,
-                  ),
-                  const Text('CodeSphere'),
-                ],
-              ),
+              const Text('CodeSphere'),
               if (!isSmallScreen)
                 Container(
                   color: Colors.white,
@@ -142,6 +135,11 @@ class _DashBoardState extends State<DashBoard> {
                           onSelected: (value) {
                             if (value == 1) {
                             } else if (value == 2) {
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) =>
+                                          ForgotPassword()));
                             } else if (value == 3) {
                               Navigator.push(
                                   context,

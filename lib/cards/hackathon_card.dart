@@ -1,13 +1,18 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:codesphere/firebase/firebase_functions.dart';
 import 'package:codesphere/screens/hackathon_details_page.dart';
+import 'package:codesphere/screens/team_creation_page.dart';
 import 'package:codesphere/widgets/schedule_container.dart';
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class HackathonCard extends StatelessWidget {
   final Map<String, dynamic> hack;
+  final String uid;
 
-  const HackathonCard({Key? key, required this.hack}) : super(key: key);
+  HackathonCard({Key? key, required this.hack, required this.uid})
+      : super(key: key);
+  final AuthServices auth = AuthServices();
 
   @override
   Widget build(BuildContext context) {
@@ -91,7 +96,14 @@ class HackathonCard extends StatelessWidget {
                 MaterialButton(
                   color: Colors.blue,
                   padding: EdgeInsets.all(10),
-                  onPressed: () {},
+                  onPressed: () {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => TeamCreationPage(
+                                hackathonDocId: uid,
+                                currentUserId: auth.getCurentUser()!.uid)));
+                  },
                   child: Text('Apply Now'),
                 ),
                 SizedBox(height: 10),

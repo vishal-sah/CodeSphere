@@ -55,23 +55,31 @@ class _LandingPageState extends State<LandingPage> {
         title: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            const Row(
-              children: [
-                // Image.asset(
-                //   'assets/images/abc.png',
-                //   height: 30,
-                // ),
-                SizedBox(
-                  width: 10,
-                ),
-                Text(
-                  'CodeSphere',
-                  style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      color: Colors.black,
-                      fontSize: 30),
-                ),
-              ],
+            InkWell(
+              onTap: () {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => LandingPage(initialPage: 0)));
+              },
+              child: const Row(
+                children: [
+                  // Image.asset(
+                  //   'assets/images/abc.png',
+                  //   height: 30,
+                  // ),
+                  SizedBox(
+                    width: 10,
+                  ),
+                  Text(
+                    'CodeSphere',
+                    style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        color: Colors.black,
+                        fontSize: 30),
+                  ),
+                ],
+              ),
             ),
             if (!isSmallScreen)
               Container(
@@ -137,7 +145,12 @@ class _LandingPageState extends State<LandingPage> {
                 ),
                 isUser
                     ? MaterialButton(
-                        onPressed: () {},
+                        onPressed: () {
+                          Navigator.pushReplacement(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => DashBoard()));
+                        },
                         child: const Text('Go to Dashboard'),
                       )
                     : MaterialButton(

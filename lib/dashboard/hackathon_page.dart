@@ -1,4 +1,6 @@
+import 'package:codesphere/landingPage/footer.dart';
 import 'package:codesphere/screens/explore_hackathon.dart';
+import 'package:codesphere/widgets/schedule_container.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
@@ -21,21 +23,29 @@ class HackathonPage extends StatelessWidget {
           //     ),
           //   ),
           // ),
-          ElevatedButton(
-              onPressed: () {
-                Navigator.push(context, 
-                  MaterialPageRoute(
-                    builder: (context) => ExploreHackathonPage()
-                  ),
-                );
-              },
-              child: const Text('Explore Hackathon'),
+          MaterialButton(
+            color: Colors.blue,
+            padding:
+                const EdgeInsets.only(left: 40, right: 40, top: 20, bottom: 20),
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => ExploreHackathonPage()),
+              );
+            },
+            child: const Text('Explore Ongoing Hackathon'),
           ),
-          const SizedBox(height: 30,),
+          const SizedBox(
+            height: 30,
+          ),
           const Text('Your Hackathons'),
           Column(
             children: teams.map((e) => TeamTile(team: e)).toList(),
-          )
+          ),
+          const SizedBox(
+            height: 10,
+          ),
+          Footer()
         ],
       ),
     );
@@ -52,16 +62,14 @@ class TeamTile extends StatelessWidget {
     Color color;
     Color bgcolor;
     bool isAccepted = false;
-    if(team['status'].toString().toLowerCase()=='accepted'){
+    if (team['status'].toString().toLowerCase() == 'accepted') {
       color = Colors.green;
       bgcolor = Colors.green.shade100;
       isAccepted = true;
-    }
-    else if(team['status'].toString().toLowerCase()=='rejected'){
+    } else if (team['status'].toString().toLowerCase() == 'rejected') {
       color = Colors.red;
       bgcolor = Colors.red.shade100;
-    }
-    else{
+    } else {
       color = Colors.black;
       bgcolor = Colors.grey.shade300;
     }
@@ -82,15 +90,15 @@ class TeamTile extends StatelessWidget {
                 fontSize: 18,
               ),
             ),
-
             Container(
               decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(10),
-                color: bgcolor
-              ),
+                  borderRadius: BorderRadius.circular(10), color: bgcolor),
               child: Padding(
                 padding: const EdgeInsets.all(3.0),
-                child: Text(team['status'].toString().toUpperCase(), style: TextStyle(color: color),),
+                child: Text(
+                  team['status'].toString().toUpperCase(),
+                  style: TextStyle(color: color),
+                ),
               ),
             ),
           ],
@@ -112,30 +120,17 @@ class TeamTile extends StatelessWidget {
                       child: const Column(
                         //mainAxisAlignment: MainAxisAlignment.start,
                         children: [
-                          Row(
-                            children: [
-                              Icon(Icons.person),
-                              Text('Nihal Yadav'),
-                            ],
-                          ),
-                          Row(
-                            children: [
-                              Icon(Icons.person),
-                              Text('Vishal Sah'),
-                            ],
-                          ),
-                          Row(
-                            children: [
-                              Icon(Icons.person),
-                              Text('Shubham Kumar'),
-                            ],
-                          )
+                          Text('Nihal Yadav'),
+                          Text('Vishal Sah'),
+                          Text('Shubham Kumar')
                         ],
                       ),
                     ),
-                    const SizedBox(height: 10,),
+                    const SizedBox(
+                      height: 10,
+                    ),
                     MaterialButton(
-                      onPressed: (){},
+                      onPressed: () {},
                       color: isAccepted ? Colors.blue : Colors.grey,
                       child: const Text('Start Submission'),
                     )
@@ -143,22 +138,13 @@ class TeamTile extends StatelessWidget {
                 ),
                 Column(
                   children: [
-                    Container(
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(10),
-                        color: Colors.white,
-                      ),
-                      padding: const EdgeInsets.all(10),
-                      child: Column(
-                        children: [
-                          const Text('Application Time'),
-                          Text('${DateFormat('dd-MM-yyyy').format(DateTime.now())} - ${DateFormat('dd-MM-yyyy').format(DateTime.now())}'),
-                          const Text('Submission Time'),
-                          Text('${DateFormat('dd-MM-yyyy').format(DateTime.now())} - ${DateFormat('dd-MM-yyyy').format(DateTime.now())}'),
-                          const Text('Result Declaration'),
-                          Text('${DateFormat('dd-MM-yyyy').format(DateTime.now())} - ${DateFormat('dd-MM-yyyy').format(DateTime.now())}'),
-                        ],
-                      ),
+                    ScheduleContainer(
+                      start: DateTime.now(),
+                      astart: DateTime.now(),
+                      aend: DateTime.now(),
+                      end: DateTime.now(),
+                      result: DateTime.now(),
+                      mid: DateTime.now(),
                     ),
                   ],
                 )
@@ -177,7 +163,11 @@ List<Map<String, dynamic>> teams = [
     'name': 'Widget Warrior',
     'status': 'Accepted',
     'score': 100,
-    'members': [['url','Nihal Yadav'], ['url','Shubham Kumar'], ['url','Vishal Sah']],
+    'members': [
+      ['url', 'Nihal Yadav'],
+      ['url', 'Shubham Kumar'],
+      ['url', 'Vishal Sah']
+    ],
     'submissionId': 'id',
   },
   {
@@ -185,7 +175,11 @@ List<Map<String, dynamic>> teams = [
     'name': 'Code Crushers',
     'status': 'Pending',
     'score': 85,
-    'members': [['url','Alice Johnson'], ['url','Bob Smith'], ['url','Charlie Brown']],
+    'members': [
+      ['url', 'Alice Johnson'],
+      ['url', 'Bob Smith'],
+      ['url', 'Charlie Brown']
+    ],
     'submissionId': 'def456',
   },
   {
@@ -193,7 +187,11 @@ List<Map<String, dynamic>> teams = [
     'name': 'Tech Titans',
     'status': 'Rejected',
     'score': 60,
-    'members': [['url','Emma Watson'], ['url','David Lee'], ['url','Sophia Taylor']],
+    'members': [
+      ['url', 'Emma Watson'],
+      ['url', 'David Lee'],
+      ['url', 'Sophia Taylor']
+    ],
     'submissionId': 'ghi987',
   },
   {
@@ -201,7 +199,11 @@ List<Map<String, dynamic>> teams = [
     'name': 'Byte Brigade',
     'status': 'Accepted',
     'score': 95,
-    'members': [['url','Michael Chen'], ['url','Jennifer Adams'], ['url','Kevin Patel']],
+    'members': [
+      ['url', 'Michael Chen'],
+      ['url', 'Jennifer Adams'],
+      ['url', 'Kevin Patel']
+    ],
     'submissionId': 'stu654',
   },
   {
@@ -209,7 +211,11 @@ List<Map<String, dynamic>> teams = [
     'name': 'Pixel Pirates',
     'status': 'Accepted',
     'score': 78,
-    'members': [['url','Lily Garcia'], ['url','Samuel Green'], ['url','Eva Martinez']],
+    'members': [
+      ['url', 'Lily Garcia'],
+      ['url', 'Samuel Green'],
+      ['url', 'Eva Martinez']
+    ],
     'submissionId': 'qrs222',
   },
   {
@@ -217,7 +223,11 @@ List<Map<String, dynamic>> teams = [
     'name': 'Bug Busters',
     'status': 'Pending',
     'score': 70,
-    'members': [['url','Oliver Johnson'], ['url','Isabella White'], ['url','Daniel Kim']],
+    'members': [
+      ['url', 'Oliver Johnson'],
+      ['url', 'Isabella White'],
+      ['url', 'Daniel Kim']
+    ],
     'submissionId': 'lmn777',
   }
 ];

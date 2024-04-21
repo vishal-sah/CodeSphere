@@ -1,159 +1,126 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:codesphere/screens/hackathon_details_page.dart';
+import 'package:codesphere/widgets/schedule_container.dart';
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-class Hackathon {
-  final String name;
-  final String about;
-  final String imageUrl;
-  final String hackathonName;
-  final String website;
-  final String instagramLink;
-  final String linkedinLink;
-
-  Hackathon({
-    required this.name,
-    required this.about,
-    required this.imageUrl,
-    required this.hackathonName,
-    required this.instagramLink,
-    required this.linkedinLink,
-    required this.website,
-  });
-}
-
 class HackathonCard extends StatelessWidget {
-  final Hackathon hackathon;
-  final Function() onTap;
+  final Map<String, dynamic> hack;
 
-  const HackathonCard({super.key, required this.hackathon, required this.onTap});
+  const HackathonCard({Key? key, required this.hack}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    String name = hack['name'] ?? '';
+    String about = hack['about'] ?? '';
+    String instagramLink = hack['instagramLink'] ?? '';
+    String linkedinLink = hack['linkedinLink'] ?? '';
+    String website = hack['website'] ?? '';
+
     return SizedBox(
       child: Card(
         elevation: 5,
         margin: const EdgeInsets.all(10),
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(8),
+          borderRadius: BorderRadius.circular(15),
         ),
-        borderOnForeground: true,
         clipBehavior: Clip.antiAliasWithSaveLayer,
         child: InkWell(
-          onTap: onTap,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: <Widget>[
-              Image.network(
-                hackathon.imageUrl,
-                height: 200,
-                width: double.infinity,
-                fit: BoxFit.cover,
+          onTap: () {
+            // Navigate to HackathonDetailPage with the hackathon's UID
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => HackathonDetailPage(hack: hack),
               ),
-              Container(
-                padding: const EdgeInsets.fromLTRB(15, 15, 15, 0),
-                color: Colors.lightBlueAccent[200],
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: <Widget>[
-                    Text(
-                      hackathon.name,
-                      style: TextStyle(
-                        fontSize: 24,
-                        color: Colors.grey[800],
-                      ),
+            );
+          },
+          child: Container(
+            padding: const EdgeInsets.fromLTRB(15, 15, 15, 0),
+            color: Colors.blue.shade300,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                Text(
+                  name,
+                  style: const TextStyle(
+                    fontSize: 24,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.black,
+                  ),
+                ),
+                SizedBox(height: 10),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    ScheduleContainer(
+                      astart: hack['applicationStartDate'].toDate(),
+                      aend: hack['applicationEndDate'].toDate(),
+                      start: hack['hackathonStartDate'].toDate(),
+                      end: hack['hackathonEndDate'].toDate(),
+                      mid: hack['midEvaluationDate'].toDate(),
+                      result: hack['resultDate'].toDate(),
                     ),
-                    Container(height: 10),
-                    Text(
-                      hackathon.about,
-                      style: TextStyle(
-                        fontSize: 15,
-                        color: Colors.grey[700],
-                      ),
-                    ),
-                    Container(height: 10),
-                    Container(height: 10),
-                    Row(
+                    Column(
                       children: [
-                        Container(width: 10),
-                        GestureDetector(
-                          onTap: () {
-                            _launchUrl(hackathon.instagramLink); // Launch Instagram URL
-                          },
-                          child: SocialIcon(
-                            name: 'instagram',
-                            link: hackathon.instagramLink,
-                          )
+                        SocialIcon(
+                          name: 'instagram',
+                          link: instagramLink,
                         ),
-                        Container(width: 10),
-                        GestureDetector(
-                          onTap: () {
-                            _launchUrl(hackathon.linkedinLink); // Launch LinkedIn URL
-                          },
-                          child: SocialIcon(
-                            name: 'linkedin',
-                            link: hackathon.linkedinLink,
-                          )
+                        const SizedBox(
+                          height: 5,
                         ),
-                        Container(width: 10),
-                        GestureDetector(
-                          onTap: () {
-                            _launchUrl(hackathon.website); // Launch website URL
-                          },
-                          child: Container(
-                            decoration: const BoxDecoration(
-                              shape: BoxShape.circle,
-                              color: Colors.blue,
-                            ),
-                            padding: const EdgeInsets.all(12),
-                            child: const Icon(
-                              Icons.link,
-                              color: Colors.white,
-                              size: 20,
-                            ),
-                          ),
-                        )
+                        SocialIcon(
+                          name: 'linkedin',
+                          link: linkedinLink,
+                        ),
+                        const SizedBox(
+                          height: 5,
+                        ),
+                        SocialIcon(
+                          name: 'link',
+                          link: website,
+                        ),
                       ],
                     ),
-                    Container(height: 10),
                   ],
                 ),
-              ),
-            ],
+                const SizedBox(
+                  height: 5,
+                ),
+                MaterialButton(
+                  color: Colors.blue,
+                  padding: EdgeInsets.all(10),
+                  onPressed: () {},
+                  child: Text('Apply Now'),
+                ),
+                SizedBox(height: 10),
+              ],
+            ),
           ),
         ),
       ),
     );
-  }
-
-  // Function to launch URL
-  void _launchUrl(String url) async {
-    // ignore: deprecated_member_use
-    if (await canLaunch(url)) {
-      // ignore: deprecated_member_use
-      await launch(url);
-    } else {
-      throw 'Could not launch $url';
-    }
   }
 }
 
 class SocialIcon extends StatelessWidget {
   final String name;
   final String link;
-  const SocialIcon({
-    super.key,
-    required this.name,
-    required this.link
-  });
+
+  const SocialIcon({Key? key, required this.name, required this.link})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return InkWell(
+    return GestureDetector(
       onTap: () async {
-        // ignore: deprecated_member_use
         await launch(link);
       },
-      child: Image.asset('assets/images/$name.png'),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 10),
+        child: Image.asset('assets/images/$name.png'),
+      ),
     );
   }
 }

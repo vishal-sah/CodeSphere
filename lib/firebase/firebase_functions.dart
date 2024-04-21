@@ -223,8 +223,8 @@ class AuthServices {
     required DateTime hackathonEndDate,
     required DateTime midEvaluationDate,
     required DateTime resultDate,
-    required List<List<String>> partners,
-    required List<List<String>> faqs,
+    required String partners,
+    required String faqs,
     required String coverImageUrl,
     required String email,
   }) async {

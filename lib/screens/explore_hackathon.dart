@@ -1,9 +1,13 @@
-import 'package:codesphere/screens/hackathon_details_page.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:codesphere/landingPage/footer.dart';
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:codesphere/cards/hackathon_card.dart';
+import 'package:codesphere/screens/hackathon_details_page.dart';
 
 class ExploreHackathonPage extends StatelessWidget {
+  final FirebaseFirestore firestore = FirebaseFirestore.instance;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -12,61 +16,38 @@ class ExploreHackathonPage extends StatelessWidget {
       ),
       body: SingleChildScrollView(
         child: Column(
-          children: <Widget>[
-            HackathonCard(
-              hackathon: Hackathon(
-                name: 'Sample Hackathon 1',
-                about: 'Sample Hackathon 1 Description',
-                imageUrl: 'https://via.placeholder.com/300',
-                hackathonName: 'Hackathon 1',
-                instagramLink: 'https://www.instagram.com/',
-                linkedinLink: 'https://www.linkedin.com/',
-                website: 'https://www.example.com/',
-              ),
-              onTap: () {
-                Navigator.push(context, 
-                  MaterialPageRoute(
-                    builder: (context) => HackathonDetailPage()
-                  )
-                );
+          children: [
+            FutureBuilder<QuerySnapshot>(
+              future: firestore.collection('hackathons').get(),
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return Center(child: CircularProgressIndicator());
+                } else {
+                  if (snapshot.hasError) {
+                    return Center(child: Text('Error: ${snapshot.error}'));
+                  } else {
+                    List<QueryDocumentSnapshot> hackathonDocs =
+                        snapshot.data!.docs;
+                    return Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: hackathonDocs.map((document) {
+                        Map<String, dynamic> hackathonData =
+                            document.data() as Map<String, dynamic>;
+
+                        return Padding(
+                          padding: const EdgeInsets.symmetric(
+                              vertical: 10, horizontal: 16),
+                          child: HackathonCard(
+                            hack: hackathonData,
+                          ),
+                        );
+                      }).toList(),
+                    );
+                  }
+                }
               },
             ),
-            HackathonCard(
-              hackathon: Hackathon(
-                name: 'Sample Hackathon 2',
-                about: 'Sample Hackathon 2 Description',
-                imageUrl: 'https://via.placeholder.com/300',
-                hackathonName: 'Hackathon 2',
-                instagramLink: 'https://www.instagram.com/',
-                linkedinLink: 'https://www.linkedin.com/',
-                website: 'https://www.example.com/',
-              ),
-              onTap: () {
-                Navigator.push(context, 
-                  MaterialPageRoute(
-                    builder: (context) => HackathonDetailPage()
-                  )
-                );
-              },
-            ),
-            HackathonCard(
-              hackathon: Hackathon(
-                name: 'Sample Hackathon 3',
-                about: 'Sample Hackathon 3 Description',
-                imageUrl: 'https://via.placeholder.com/300',
-                hackathonName: 'Hackathon 3',
-                instagramLink: 'https://www.instagram.com/',
-                linkedinLink: 'https://www.linkedin.com/',
-                website: 'https://www.example.com/',
-              ),
-              onTap: () {
-                Navigator.push(context, 
-                  MaterialPageRoute(
-                    builder: (context) => const HackathonDetailPage()
-                  )
-                );
-              },
-            ),
+            Footer()
           ],
         ),
       ),

@@ -1,10 +1,8 @@
 import 'package:codesphere/firebase/firebase_functions.dart';
 import 'package:codesphere/landingPage/faqPage.dart';
-import 'package:codesphere/landingPage/landing_page.dart';
 import 'package:codesphere/screens/code_of_conduct.dart';
 import 'package:codesphere/screens/create_hackathon_page.dart';
 import 'package:codesphere/screens/explore_hackathon.dart';
-import 'package:codesphere/screens/organise_hackathon.dart';
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -39,7 +37,7 @@ class Footer extends StatelessWidget {
                           mainAxisAlignment: MainAxisAlignment.start,
                           children: [
                             Text(
-                              'We love software\nand the people who\nbuild them.',
+                              'Unleash your creativity and compete in the ultimate coding showdown!',
                               style: TextStyle(
                                   color: Colors.black,
                                   fontWeight: FontWeight.bold,
@@ -58,11 +56,11 @@ class Footer extends StatelessWidget {
                           mainAxisAlignment: MainAxisAlignment.start,
                           children: [
                             Text(
-                              'We love software\nand the people who\nbuild them.',
+                              'Unleash your creativity and compete in the ultimate coding showdown!',
                               style: TextStyle(
                                   color: Colors.black,
                                   fontWeight: FontWeight.bold,
-                                  fontSize: 35),
+                                  fontSize: 30),
                             ),
                             SocialMediaIcons()
                           ],
@@ -91,10 +89,7 @@ class Footer extends StatelessWidget {
                               fontWeight: FontWeight.bold,
                               color: Colors.deepPurple),
                         ),
-                        Text(
-                            'Built at 2586 Labs. Made with Heart Gatsby.js, Framer Motion \n'
-                            'and a bunch of other libraries that help making beautiful \n'
-                            'things on the internet possible. We are forever in your debt.')
+                        Text('Built at Hack36.')
                       ],
                     )
                   : const Column(
@@ -106,16 +101,13 @@ class Footer extends StatelessWidget {
                               fontWeight: FontWeight.bold,
                               color: Colors.deepPurple),
                         ),
-                        Text(
-                            'Built at 2586 Labs. Made with Heart Gatsby.js, Framer Motion \n'
-                            'and a bunch of other libraries that help making beautiful \n'
-                            'things on the internet possible. We are forever in your debt.')
+                        Text('Built at Hack36.',
+                            style: TextStyle(fontSize: 15)),
                       ],
                     ),
               const SizedBox(
                 height: 35,
               ),
-              const Text('© 2024, NSB Classic PTE LTD')
             ],
           ),
         ),
@@ -169,7 +161,6 @@ class Footer extends StatelessWidget {
                   context,
                   MaterialPageRoute(
                       builder: (context) => Scaffold(
-                            appBar: AppBar(),
                             body: ExploreHackathonPage(),
                           )));
             }),

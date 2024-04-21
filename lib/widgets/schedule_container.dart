@@ -27,20 +27,44 @@ class ScheduleContainer extends StatelessWidget {
       padding: const EdgeInsets.all(10),
       child: Column(
         children: [
-          const Text('Application Time'),
+          const Text(
+            'Application Time',
+            style: TextStyle(
+              color: Colors.black,
+              fontSize: 18,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
           Text(
             '${DateFormat('dd-MM-yyyy').format(astart)} - ${DateFormat('dd-MM-yyyy').format(aend)}',
-            style: const TextStyle(color: Colors.black),
+            style: const TextStyle(
+                color: Colors.black, fontSize: 14, fontWeight: FontWeight.w500),
           ),
-          const Text('Submission Time'),
+          const Text(
+            'Submission Time',
+            style: TextStyle(
+              color: Colors.black,
+              fontSize: 18,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
           Text(
             '${DateFormat('dd-MM-yyyy').format(start)} - ${DateFormat('dd-MM-yyyy').format(end)}',
-            style: const TextStyle(color: Colors.black),
+            style: const TextStyle(
+                color: Colors.black, fontSize: 14, fontWeight: FontWeight.w500),
           ),
-          const Text('Mid Evaluation - Result'),
+          const Text(
+            'Mid Evaluation - Result',
+            style: TextStyle(
+              color: Colors.black,
+              fontSize: 18,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
           Text(
             '${DateFormat('dd-MM-yyyy').format(mid)} - ${DateFormat('dd-MM-yyyy').format(result)}',
-            style: const TextStyle(color: Colors.black),
+            style: const TextStyle(
+                color: Colors.black, fontSize: 14, fontWeight: FontWeight.w500),
           ),
         ],
       ),

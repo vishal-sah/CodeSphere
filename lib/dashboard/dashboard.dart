@@ -5,6 +5,7 @@ import 'package:codesphere/firebase/firebase_functions.dart';
 import 'package:codesphere/landingPage/landing_page.dart';
 import 'package:codesphere/screens/create_hackathon_page.dart';
 import 'package:codesphere/screens/edit_profile.dart';
+import 'package:codesphere/screens/portfolio_page.dart';
 import 'package:flutter/material.dart';
 
 class DashBoard extends StatefulWidget {
@@ -56,139 +57,158 @@ class _DashBoardState extends State<DashBoard> {
     bool isSmallScreen = MediaQuery.of(context).size.width < 600;
 
     return Scaffold(
-        appBar: AppBar(
-          leadingWidth: 30,
-          title: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              const Text('CodeSphere'),
-              if (!isSmallScreen)
-                Container(
-                  color: Colors.white,
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [
-                      buildTabItem('Profile', 0),
-                      buildTabItem('Hackathons', 1),
-                      buildTabItem('Projects', 2),
-                    ],
-                  ),
+      appBar: AppBar(
+        leadingWidth: 30,
+        title: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            const Text('CodeSphere'),
+            if (!isSmallScreen)
+              Container(
+                color: Colors.white,
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    buildTabItem('Profile', 0),
+                    buildTabItem('Hackathons', 1),
+                    buildTabItem('Projects', 2),
+                  ],
                 ),
-              Row(
-                children: [
-                  if (isSmallScreen)
-                    PopupMenuButton<int>(
-                      itemBuilder: (context) {
-                        return [
-                          const PopupMenuItem(
-                            value: 0,
-                            child: Text('Profile'),
-                          ),
-                          const PopupMenuItem(
-                            value: 1,
-                            child: Text('Hackathons'),
-                          ),
-                          const PopupMenuItem(
-                            value: 2,
-                            child: Text('Projects'),
-                          ),
-                        ];
+              ),
+            Row(
+              children: [
+                if (isSmallScreen)
+                  PopupMenuButton<int>(
+                    itemBuilder: (context) {
+                      return [
+                        const PopupMenuItem(
+                          value: 0,
+                          child: Text('Profile'),
+                        ),
+                        const PopupMenuItem(
+                          value: 1,
+                          child: Text('Hackathons'),
+                        ),
+                        const PopupMenuItem(
+                          value: 2,
+                          child: Text('Projects'),
+                        ),
+                      ];
+                    },
+                    position: PopupMenuPosition.under,
+                    onSelected: (value) {
+                      _selectPage(value);
+                    },
+                  ),
+                IconButton(
+                  icon: _isDarkTheme
+                      ? const Icon(Icons.dark_mode)
+                      : const Icon(Icons.light_mode),
+                  onPressed: () {
+                    setState(
+                      () {
+                        _isDarkTheme = !_isDarkTheme;
                       },
-                      position: PopupMenuPosition.under,
-                      onSelected: (value) {
-                        _selectPage(value);
-                      },
-                    ),
-                  IconButton(
-                      icon: _isDarkTheme
-                          ? const Icon(Icons.dark_mode)
-                          : const Icon(Icons.light_mode),
-                      onPressed: () {
-                        setState(() {
-                          _isDarkTheme = !_isDarkTheme;
-                        });
-                      }),
-                  isUser
-                      ? PopupMenuButton<int>(
-                          itemBuilder: (context) {
-                            return [
-                              const PopupMenuItem(
-                                value: 1,
-                                child: Text('My Portfolio'),
+                    );
+                  },
+                ),
+                isUser
+                    ? PopupMenuButton<int>(
+                        itemBuilder: (context) {
+                          return [
+                            const PopupMenuItem(
+                              value: 1,
+                              child: Text('My Portfolio'),
+                            ),
+                            const PopupMenuItem(
+                              value: 2,
+                              child: Text('Change Password'),
+                            ),
+                            const PopupMenuItem(
+                              value: 3,
+                              child: Text('Organize a Hackathon'),
+                            ),
+                            const PopupMenuItem(
+                              value: 4,
+                              child: Text('Logout'),
+                            ),
+                          ];
+                        },
+                        position: PopupMenuPosition.under,
+                        onSelected: (value) {
+                          if (value == 1) {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => const Portfolio(),
                               ),
-                              const PopupMenuItem(
-                                value: 2,
-                                child: Text('Change Password'),
+                            );
+                          } else if (value == 2) {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => ForgotPassword(),
                               ),
-                              const PopupMenuItem(
-                                value: 3,
-                                child: Text('Organize a Hackathon'),
+                            );
+                          } else if (value == 3) {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) =>
+                                    const CreateHackathonPage(),
                               ),
-                              const PopupMenuItem(
-                                value: 4,
-                                child: Text('Logout'),
+                            );
+                          }
+                          if (value == 4) {
+                            auth.signOut();
+                            Navigator.pushReplacement(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) =>
+                                    const LandingPage(initialPage: 0),
                               ),
-                            ];
-                          },
-                          position: PopupMenuPosition.under,
-                          onSelected: (value) {
-                            if (value == 1) {
-                            } else if (value == 2) {
-                              Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) =>
-                                          ForgotPassword()));
-                            } else if (value == 3) {
-                              Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) =>
-                                          CreateHackathonPage()));
-                            }
-                            if (value == 4) {
-                              auth.signOut();
-                              Navigator.pushReplacement(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) =>
-                                          const LandingPage(initialPage: 0)));
-                            }
-                          },
-                          child: FutureBuilder(
-                            future: auth.getUserTile(uid: currentUserId!),
-                            builder: (context, snapshot) => Padding(
-                              padding: const EdgeInsets.only(right: 10),
-                              child: GestureDetector(
-                                child: const Row(
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: [
-                                    Text('user'),
-                                    CircleAvatar(
-                                      backgroundImage:
-                                          AssetImage('assets/images/abc.png'),
-                                    ),
-                                  ],
-                                ),
+                            );
+                          }
+                        },
+                        child: FutureBuilder(
+                          future: auth.getUserTile(uid: currentUserId!),
+                          builder: (context, snapshot) => Padding(
+                            padding: const EdgeInsets.only(right: 10),
+                            child: GestureDetector(
+                              child: const Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Text('user'),
+                                  CircleAvatar(
+                                    backgroundImage:
+                                        AssetImage('assets/images/abc.png'),
+                                  ),
+                                ],
                               ),
                             ),
-                          ))
-                      : TextButton(
-                          onPressed: () {
-                            Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) =>
-                                        const EmailPasswordLoginPage()));
-                          },
-                          child: const Text('SignIn')),
-                ],
-              ),
-            ],
-          ),
+                          ),
+                        ),
+                      )
+                    : TextButton(
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) =>
+                                  const EmailPasswordLoginPage(),
+                            ),
+                          );
+                        },
+                        child: const Text('SignIn'),
+                      ),
+              ],
+            ),
+          ],
         ),
-        body: pages[_selectedPage]);
+      ),
+      body: pages[_selectedPage],
+    );
   }
 
   Widget buildTabItem(String title, int index) {

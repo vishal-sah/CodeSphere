@@ -339,12 +339,12 @@ class AuthServices {
   // it will return the complete list of data not id
   Future<List<Map<String, dynamic>>> getOrganiseHacks() async {
     List<Map<String, dynamic>> list = [];
-    final data = await firestore.collection('users').doc().get();
+    final data =
+        await firestore.collection('users').doc(getCurentUser()!.uid).get();
     for (String a in data['organized']) {
-      Map<String, dynamic> temp = await firestore
-          .collection('hackathons')
-          .doc(a)
-          .get() as Map<String, dynamic>;
+      Map<String, dynamic> temp;
+      final hacks = await firestore.collection('hackathons').doc(a).get();
+      temp = hacks.data()!;
       list.add(temp);
     }
     return list;

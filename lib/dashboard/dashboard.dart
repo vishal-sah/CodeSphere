@@ -5,6 +5,7 @@ import 'package:codesphere/firebase/firebase_functions.dart';
 import 'package:codesphere/landingPage/landing_page.dart';
 import 'package:codesphere/screens/create_hackathon_page.dart';
 import 'package:codesphere/screens/edit_profile.dart';
+import 'package:codesphere/screens/organise_hackathon.dart';
 import 'package:codesphere/screens/portfolio_page.dart';
 import 'package:flutter/material.dart';
 
@@ -141,7 +142,9 @@ class _DashBoardState extends State<DashBoard> {
                             Navigator.push(
                               context,
                               MaterialPageRoute(
-                                builder: (context) => const Portfolio(),
+                                builder: (context) => Portfolio(
+                                  userId: auth.getCurentUser()!.uid,
+                                ),
                               ),
                             );
                           } else if (value == 2) {
@@ -156,7 +159,7 @@ class _DashBoardState extends State<DashBoard> {
                               context,
                               MaterialPageRoute(
                                 builder: (context) =>
-                                    const CreateHackathonPage(),
+                                    HackathonOrganizePage(),
                               ),
                             );
                           }

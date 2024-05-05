@@ -48,6 +48,7 @@ dependencies:
   go_router: ^13.2.4
   syncfusion_flutter_pdfviewer: ^25.1.40
   fluttertoast: ^8.2.5
+  provider:
 
 dev_dependencies:
   flutter_test:

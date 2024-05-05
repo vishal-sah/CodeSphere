@@ -3,6 +3,7 @@ import 'package:codesphere/dashboard/dashboard.dart';
 import 'package:codesphere/firebase/firebase_functions.dart';
 import 'package:codesphere/landingPage/about_page.dart';
 import 'package:codesphere/landingPage/faqPage.dart';
+import 'package:codesphere/widgets/theme_button.dart';
 import 'package:flutter/material.dart';
 
 class LandingPage extends StatefulWidget {
@@ -132,17 +133,7 @@ class _LandingPageState extends State<LandingPage> {
                       }
                     },
                   ),
-                IconButton(
-                  // ignore: dead_code
-                  icon: isDarkTheme
-                      ? const Icon(Icons.dark_mode)
-                      : const Icon(Icons.light_mode),
-                  onPressed: () {
-                    setState(() {
-                      isDarkTheme = !isDarkTheme;
-                    });
-                  },
-                ),
+                const ThemeToggleButton(),
                 isUser
                     ? MaterialButton(
                         onPressed: () {

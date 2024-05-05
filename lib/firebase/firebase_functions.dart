@@ -175,23 +175,23 @@ class AuthServices {
     required String description,
     required List<String> techStack,
     required String github,
-    required List<List<String>> links,
     required String youtube,
     required String logo,
     required String cover,
     required List<String> screenshots,
-    required String
-        platforms, // comma seperated platform names, later we will seperate them and use
+    required String platforms,
     required String teamUid,
   }) async {
     try {
-      DocumentReference ref = await firestore.collection('projects').add({
+      FirebaseFirestore firestore = FirebaseFirestore.instance;
+      DocumentReference projectRef = firestore.collection('projects').doc();
+
+      await projectRef.set({
         'name': name,
         'about': about,
         'description': description,
         'techStack': techStack,
         'github': github,
-        'links': links,
         'youtube': youtube,
         'logo': logo,
         'cover': cover,
@@ -200,9 +200,15 @@ class AuthServices {
         'teamUid': teamUid,
         'createdAt': FieldValue.serverTimestamp(),
       });
-      return ref.id;
+
+      // Update user's projects list
+      await firestore.collection('users').doc(getCurentUser()!.uid).update({
+        'projects': FieldValue.arrayUnion([projectRef.id]),
+      });
+
+      return projectRef.id;
     } catch (error) {
-      rethrow;
+      throw error;
     }
   }
 

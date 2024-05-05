@@ -1,12 +1,14 @@
 import 'package:codesphere/auth/forgot_password.dart';
 import 'package:codesphere/auth/login_page.dart';
 import 'package:codesphere/dashboard/hackathon_page.dart';
+import 'package:codesphere/dashboard/projects_page.dart';
 import 'package:codesphere/firebase/firebase_functions.dart';
 import 'package:codesphere/landingPage/landing_page.dart';
 import 'package:codesphere/screens/create_hackathon_page.dart';
 import 'package:codesphere/screens/edit_profile.dart';
 import 'package:codesphere/screens/organise_hackathon.dart';
 import 'package:codesphere/screens/portfolio_page.dart';
+import 'package:codesphere/widgets/theme_button.dart';
 import 'package:flutter/material.dart';
 
 class DashBoard extends StatefulWidget {
@@ -23,9 +25,7 @@ class _DashBoardState extends State<DashBoard> {
   List<Widget> pages = [
     const ProfileForm(),
     HackathonPage(),
-    const Center(
-      child: Text('3'),
-    ),
+    ProjectPage(),
   ];
   final AuthServices auth = AuthServices();
 
@@ -102,18 +102,7 @@ class _DashBoardState extends State<DashBoard> {
                       _selectPage(value);
                     },
                   ),
-                IconButton(
-                  icon: _isDarkTheme
-                      ? const Icon(Icons.dark_mode)
-                      : const Icon(Icons.light_mode),
-                  onPressed: () {
-                    setState(
-                      () {
-                        _isDarkTheme = !_isDarkTheme;
-                      },
-                    );
-                  },
-                ),
+                const ThemeToggleButton(),
                 isUser
                     ? PopupMenuButton<int>(
                         itemBuilder: (context) {
@@ -158,8 +147,7 @@ class _DashBoardState extends State<DashBoard> {
                             Navigator.push(
                               context,
                               MaterialPageRoute(
-                                builder: (context) =>
-                                    HackathonOrganizePage(),
+                                builder: (context) => HackathonOrganizePage(),
                               ),
                             );
                           }
